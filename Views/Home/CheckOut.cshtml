@@ -1,0 +1,91 @@
+﻿@using System.Security.Claims;
+@using Microsoft.IdentityModel.JsonWebTokens;
+@using System.Linq;
+@model GasHub.Models.DeliveryAddress
+@{
+    var userName = string.Empty;
+    var userId = string.Empty;
+
+    if (User.Identity.IsAuthenticated)
+    {
+        var claimsIdentity = User.Identity as ClaimsIdentity;
+        if (claimsIdentity != null)
+        {
+            var userNameClaim = claimsIdentity.FindFirst(ClaimTypes.Name);
+            var userIdClaim = claimsIdentity.FindFirst("UserId") ?? claimsIdentity.FindFirst(ClaimTypes.NameIdentifier); // Try both "UserId" and ClaimTypes.NameIdentifier
+
+            if (userNameClaim != null)
+            {
+                userName = userNameClaim.Value;
+            }
+
+            if (userIdClaim != null)
+            {
+                userId = userIdClaim.Value;
+            }
+        }
+    }
+}
+
+@{
+    ViewData["Title"] = "CheckOut";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<section class="section-padding section-bg">
+    <div class="container">
+        <div class="row g-3 p-3 mx-5">
+            <div class="col-md-8">
+                <h6 class="text-center"> Product List </h6>
+                <hr />
+                <div id="product-list">
+                    <!-- Product items will be dynamically inserted here -->
+                </div>
+
+                <h6 class="text-center mt-5"> Return Product List </h6>
+                <hr />
+                <div id="return-product-list">
+                    <div id="return-product-container">
+                        <!-- Product items will be dynamically inserted here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4 px-5">
+                <div class="d-flex align-items-start flex-column">
+                    <div class="w-100" id="address-container" data-user-id="@userId"></div>
+
+                    <div class="mt-5 w-100">
+                        <div class="d-flex justify-content-between">
+                            <p>Subtotal</p>
+                            <p>Tk <span id="subtotal">00</span></p>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <p>Less Discount</p>
+                            <p>Tk <span id="discount">00</span></p>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <p>Less Delivery</p>
+                            <p>Tk <span id="delivery">00</span></p>
+                        </div>
+                        <hr />
+                        <div class="d-flex justify-content-between">
+                            <p>Total</p>
+                            <p>Tk <span id="total">00</span></p>
+                        </div>
+                    </div>
+                    <div class="mt-5 w-100">
+                        <button id="add-order-and-return-product" data-user-id="@userId" class="btn w-100 btn-dark" onclick="navigateToConfirmOrder()" disabled>Confirm Order</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+ @section Scripts {
+    <script src="~/js/inventory/product/CheckOutProduct.js"></script>
+}
+ 

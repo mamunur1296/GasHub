@@ -1,0 +1,83 @@
+﻿@model GasHub.Models.ViewModels.ProductViewModel
+<!-- Food Catagory Section Start -->
+<section class="food-category-section fix section-padding section-bg">
+    <div class="container">
+        <div class="section-title text-center">
+            <span class="wow fadeInUp">crispy, every bite taste</span>
+            <h2 class="wow fadeInUp" data-wow-delay=".3s">Popular Food Items</h2>
+        </div>
+        <div class="row">
+            @{
+                var products = Model.ProductList.Take(8);  // Assuming you're taking the first 8 products
+                var discounts = Model.productDiscunts.ToDictionary(d => d.ProductId, d => new { DiscountedPrice = d.DiscountedPrice, ValidTill = d.ValidTill });
+
+                foreach (var product in products)
+                {
+                    if (discounts.TryGetValue(product.Id, out var discountInfo))
+                    {
+                        product.DiscountPrice = discountInfo.DiscountedPrice;
+                        product.ValidTill = discountInfo.ValidTill;
+                    }
+
+                    <partial name="_PopularProductCard" model="product" />
+                }
+            }
+
+        </div>
+        <div class="catagory-button text-center pt-4 wow fadeInUp" data-wow-delay=".3s">
+            <a asp-action="Product" asp-controller="Home" class="theme-btn">
+                <span class="button-content-wrapper d-flex align-items-center">
+                    <span class="button-icon"><i class="fas fa-shopping-cart"></i></span>
+                    <span class="button-text">view more Product</span>
+                </span>
+            </a>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+@* <div class="col-xl-3 col-lg-6 col-md-6 wow fadeInUp" data-wow-delay=".8s">
+    <div class="catagory-product-card-2 text-center">
+        <div class="icon">
+            <a href="shop-cart.html"><i class="far fa-heart"></i></a>
+        </div>
+        <div class="catagory-product-image">
+            <img src="~/Users/assets/img/food/delicious-burger.png" alt="product-img">
+        </div>
+        <div class="catagory-product-content">
+            <div class="catagory-button">
+                <a href="shop-cart.html" class="theme-btn-2"><i class="far fa-shopping-basket"></i>Add To Cart</a>
+            </div>
+            <div class="info-price d-flex align-items-center justify-content-center">
+                <p>-5%</p>
+                <h6>$30.52</h6>
+                <span>$28.52</span>
+            </div>
+            <h4>
+                <a href="shop-single.html">delicious burger</a>
+            </h4>
+            <div class="star">
+                <span class="fas fa-star"></span>
+                <span class="fas fa-star"></span>
+                <span class="fas fa-star"></span>
+                <span class="fas fa-star"></span>
+                <span class="fas fa-star text-white"></span>
+            </div>
+        </div>
+    </div>
+</div> *@

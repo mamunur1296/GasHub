@@ -1,0 +1,193 @@
+﻿@model GasHub.Models.Register
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayoutPage.cshtml";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>User</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item active">User</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <!-- /.card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title font-weight-bold fs-1 color-primary">User List</h3>
+                    </div>
+                    <div id="successMessage" class="alert alert-success" role="alert" style="display: none;">
+                        <strong>Holy guacamole!</strong>   Your company was successfully saved.
+                        <button id="btnClose" type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+                    <div id="errorMessage" class="alert alert-danger" role="alert" style="display: none;">
+                        <strong>Holy guacamole!</strong>   Your company was successfully saved.
+                        <button id="btnClose" type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+
+                    <!-- /.card-header -->
+
+                    <div class="card-body">
+                        <table id="CompanyTable" class="table table-bordered table-striped">
+                            <p> <a id="btn-Create" class="btn btn-success"> <i class="fa fa-plus"></i> Add New User</a> </p>
+                            <thead>
+                                <tr>
+                                    <th>Image</th>
+                                    <th>Full Name</th>
+                                    <th>User Name</th>
+                                    <th>Email</th>
+                                    <th>Phone</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+
+
+
+<div class="modal fade" id="modelCreate" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAddEmployee" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content w-auto">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabelAddEmployee">Add User</h4>
+                <h4 class="modal-title" style="display:none;" id="myModalLabelUpdateEmployee">Update User</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="CompanyForm">
+                    <div class="card-body">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="FirstName" class="control-label"></label>
+                                            <input asp-for="FirstName" placeholder="Enter your First Name" class="form-control" name="FirstName" />
+                                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="LaststName" class="control-label"></label>
+                                            <input asp-for="LaststName" placeholder="Enter your Last Name" class="form-control" name="LaststName" />
+                                            <span asp-validation-for="LaststName" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="UserName" class="control-label"></label>
+                                            <input asp-for="UserName" placeholder="Enter your User Name" class="form-control" name="UserName" />
+                                            <span asp-validation-for="UserName" class="text-danger"></span>
+                                            <div id="UserError" class="text-danger" role="alert" style="display: none;">
+                                                Username is already taken.
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="Email" class="control-label"></label>
+                                            <input asp-for="Email" placeholder="Enter your Email" class="form-control" name="Email" />
+                                            <span asp-validation-for="Email" class="text-danger"></span>
+                                            <div id="EmailError" class="text-danger" role="alert" style="display: none;">
+                                                Email is already taken.
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="PhoneNumber" class="control-label"></label>
+                                            <input asp-for="PhoneNumber" placeholder="Enter your Phone Number" class="form-control" name="PhoneNumber" />
+                                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="Password" class="control-label"></label>
+                                            <input asp-for="Password" placeholder="Enter Password" class="form-control" name="Password" />
+                                            <span asp-validation-for="Password" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="ConfirmationPassword" class="control-label"></label>
+                                            <input asp-for="ConfirmationPassword" placeholder="Confirm your Password" class="form-control" name="ConfirmationPassword" />
+                                            <span asp-validation-for="ConfirmationPassword" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="Roles"></label>
+                                            <select class="form-control" asp-for="Roles" id="RolesDropdown">
+                                                <option value="">Select role</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnSave">Save</button>
+                <button type="button" class="btn btn-primary" id="btnUpdate">Update</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="successMessage" style="display:none;" class="alert alert-success"></div>
+<div id="UserError" style="display:none;" class="alert alert-danger"></div>
+<div id="EmailError" style="display:none;" class="alert alert-danger"></div>
+<div id="GeneralError" style="display:none;" class="alert alert-danger"></div>
+
+
+
+
+
+
+
+
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteAndDetailsModel" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                Are you sure you want to delete the following User ?
+            </div>
+
+            <div class="modal-body" id="companyDetails">
+                <!-- Company details will be populated dynamically by jQuery -->
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="btnDelete">Delete</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="~/js/administration/user.js"></script>
+}

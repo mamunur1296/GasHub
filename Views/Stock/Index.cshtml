@@ -1,0 +1,165 @@
+﻿@model GasHub.Models.Stock
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayoutPage.cshtml";
+}
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Stock</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
+                    <li class="breadcrumb-item active">Stock</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <!-- /.card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title font-weight-bold fs-1 color-primary">Stock List</h3>
+                    </div>
+                    <div id="successMessage" class="alert alert-success" role="alert" style="display: none;">
+                        <strong>Holy guacamole!</strong>   Your company was successfully saved.
+                        <button id="btnClose" type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+
+                    <!-- /.card-header -->
+
+                    <div class="card-body">
+                        <table id="CompanyTable" class="table table-bordered table-striped">
+                            <p> <a id="btn-Create" class="btn btn-success"> <i class="fa fa-plus"></i> Create New Stock</a> </p>
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>Trader Name</th>
+                                    <th>Quantity</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+
+
+
+<div class="modal  fade " id="modelCreate" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAddEmployee" aria-hidden="true">
+    <div class="modal-dialog modal-xl ">
+        <div class="modal-content w-auto">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabelAddEmployee">Add Stock</h4>
+                <h4 class="modal-title" style="display:none;" id="myModalLabelUpdateEmployee">Update Stock</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="CompanyForm">
+                    <div class="card-body">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="TraderId"></label>
+                                            <select class="form-control" asp-for="TraderId" id="traderDropdown">
+                                                <option value="">Select Product</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="ProductId"></label>
+                                            <select class="form-control" asp-for="ProductId" id="productDropdown">
+                                                <option value="">Select Product</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+                                            <label asp-for="Quantity" class="control-label"></label>
+                                            <input asp-for="Quantity" placeholder="Enter Quantity" class="form-control" name="Quantity" />
+                                            <span asp-validation-for="Quantity" class="text-danger"></span>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+                            @* <div class="col-md-6">
+                            <div class="row">
+                            <div class="col-md-6">
+
+
+                            </div>
+                            <div class="col-md-6">
+
+                            </div>
+                            </div>
+                            </div> *@
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnSave">Save</button>
+                <button type="button" class="btn btn-primary" id="btnUpdate">Update</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteAndDetailsModel" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                Are you sure you want to delete the following Stock ?
+            </div>
+
+            <div class="modal-body" id="companyDetails">
+                <!-- Company details will be populated dynamically by jQuery -->
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="btnDelete">Delete</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="~/js/inventory/stock/stock.js"></script>
+}
+
+
+

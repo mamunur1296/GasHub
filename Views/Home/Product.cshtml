@@ -1,0 +1,95 @@
+﻿
+@{
+    ViewData["Title"] = "Product";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!-- Food Catagory Section Start -->
+<section class="food-category-section fix section-padding">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-xl-2 col-lg-2 order-2 order-md-1 mt-5">
+                <div class="main-sidebar">
+                    <div class="single-sidebar-widget">
+                        <div class="wid-title">
+                            <h4>Companys</h4>
+                        </div>
+
+                        <a class="fw-bold" id="all-products-btn">All Products</a>
+                        
+                        <div class="widget-categories">
+                            <ul id="category-list">
+                                
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="single-sidebar-widget">
+                        <div class="wid-title">
+                            <h4>filter by size</h4>
+                        </div>
+                        <div class="filter-size" id="size-filter">
+                            @* <div class="input-save d-flex align-items-center">
+                                <input type="checkbox" class="form-check-input" name="save-for-next" id="saveForNext">
+                                <label for="saveForNext">Small</label>
+                            </div> *@
+                            
+                        </div>
+                    </div>
+                   
+                </div>
+            </div>
+            <div class="col-xl-10 col-lg-10 order-1 order-md-2 ">
+                <div class="row" id="product-section">
+                      @* <div class="col-xl-3 col-lg-3 col-md-3">
+                        <div class="catagory-product-card-2 shadow-style text-center">
+                            <div class="catagory-product-image">
+                                <img src="~/Users/assets/img/food/pasta-2.png" alt="product-img">
+                            </div>
+                            <div class="catagory-product-content d-flex">
+                                <div class="catagory-button">
+                                    <a href="shop-cart.html" class="theme-btn-2"><i class="far fa-shopping-basket"></i>Add To Cart</a>
+                                </div>
+                                <div class="info-price d-flex align-items-center justify-content-center">
+                                    <p>-5%</p>
+                                    <h6>$30.52</h6>
+                                    <span>$28.52</span>
+                                </div>
+                                <h4>
+                                    <a href="shop-single.html">Chiness pasta</a>
+                                </h4>
+                                <div class="star">
+                                    <span class="fas fa-star"></span>
+                                    <span class="fas fa-star"></span>
+                                    <span class="fas fa-star"></span>
+                                    <span class="fas fa-star"></span>
+                                    <span class="fas fa-star color-bg"></span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>   *@
+                </div>
+            </div>
+                @* <div class="page-nav-wrap mt-5 text-center">
+                    <ul>
+                        <li><a class="page-numbers" href="#"><i class="fal fa-long-arrow-left"></i></a></li>
+                        <li><a class="page-numbers" href="#">1</a></li>
+                        <li><a class="page-numbers" href="#">2</a></li>
+                        <li><a class="page-numbers" href="#">3</a></li>
+                        <li><a class="page-numbers" href="#">4</a></li>
+                        <li><a class="page-numbers" href="#"><i class="fal fa-long-arrow-right"></i></a></li>
+                    </ul>
+                </div> *@
+            </div>
+        </div>
+    </div>
+</section>
+
+
+
+
+
+
+
+@section Scripts {
+   <script src="~/js/inventory/product/getallproductfiltering.js"></script>
+}

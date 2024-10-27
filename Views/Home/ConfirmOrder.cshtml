@@ -1,0 +1,19 @@
+﻿
+@{
+    ViewData["Title"] = "ConfirmOrder";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+<section class="section-padding section-bg">
+    <div class=" text-center container">
+
+        <div class="card-body">
+            <h5 class="card-title">Congratulations!</h5>
+            <p class="card-text my-1">Your order has been successfully completed.</p>
+            <a asp-action="InvoiceReportDounlode" asp-controller="Home" class="btn btn-dark">Download Memo</a>
+        </div>
+
+    </div>
+</section>

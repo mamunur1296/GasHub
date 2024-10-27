@@ -1,0 +1,22 @@
+﻿ @model GasHub.Models.Product
+<div class="col-md-4">
+    <div class="catagory-product-card bg-cover" style="background-image: url('husers/assets/img/shape/catagory-card-shape.jpg');">
+        <h5>@Model.Name</h5>
+        <div class="catagory-product-image text-center">
+            <a asp-action="Product" asp-controller="Home">
+                <img src="@Url.Content("~/images/" + Model.ProdImage)" alt="product-img" style="width: 100%;">
+            </a>
+        </div>
+        <div class="catagory-product-content text-center">
+             <div class="catagory-product-icon">
+                 <img src="~/Users/assets/img/shape/food-shape.svg" alt="shape-text"> 
+            </div> 
+            <h3>
+                <a asp-action="Product" asp-controller="Home">
+                    @Model.Name
+                </a>
+            </h3>
+            <p> product</p>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,62 @@
+﻿@model GasHub.Models.Login
+
+@{
+    ViewData["Title"] = "Login Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<!--<< Contact Section Start >>-->
+<section class="contact-section section-padding pt-0 section-bg">
+    <div class="container">
+        <div class="contact-area">
+            <div class="row justify-content-center">
+                <!-- Changed justify-content-between to justify-content-center -->
+                <div class="col-xl-5 col-lg-5 mt-5 mt-lg-0 mx-auto">
+                    <!-- Changed ms-auto to mx-auto -->
+                    <div class="contact-form-items">
+                        <div class="contact-title">
+                            <h3 class="wow fadeInUp" data-wow-delay=".3s">Login </h3>
+                            <p class="wow fadeInUp" data-wow-delay=".5s">Your email address will not be published. Required fields are marked *</p>
+                        </div>
+                        <form method="post" asp-action="LoginUser" asp-controller="Public">
+                            <input type="hidden" name="ReturnUrl" value="@ViewData["ReturnUrl"]" />
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                            <div class="row g-4">
+                                <div class="col-lg-12 wow fadeInUp" data-wow-delay=".5s">
+                                    <div class="form-clt">
+                                        <input type="text" asp-for="UserName" placeholder="Choose Your Username*"style="text-transform: none;" >
+                                        <div class="icon">
+                                            <i class="fal fa-user"></i>
+                                        </div>
+                                    </div>
+                                    <span asp-validation-for="UserName" class="text-danger"></span>
+                                </div>
+                                <div class="col-lg-12 wow fadeInUp" data-wow-delay=".5s">
+                                    <div class="form-clt">
+                                        <input type="password" asp-for="Password" placeholder="Enter Your Unique Password*" autocomplete="new-password" style="text-transform: none;">
+                                        <div class="icon">
+                                            <i class="fal fa-lock"></i>
+                                        </div>
+                                    </div>
+                                    <span asp-validation-for="Password" class="text-danger"></span>
+                                </div>
+
+                                <div class="col-lg-6 wow fadeInUp" data-wow-delay=".8s">
+                                    <button type="submit" class="theme-btn">
+                                        <span class="button-content-wrapper d-flex align-items-center">
+                                            <span class="button-icon"><i class="fal fa-sign-in-alt"></i></span>
+                                            <span class="button-text">Login</span>
+                                        </span>
+                                    </button>
+                                </div>
+                                <div class="col-lg-12 wow fadeInUp" data-wow-delay=".5s">
+                                    <p>Don't have an account? <a asp-action="Register" asp-controller="Public" class="text-success">Register</a></p>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

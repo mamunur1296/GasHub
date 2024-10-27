@@ -1,0 +1,172 @@
+﻿@model GasHub.Models.DeliveryAddress
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayoutPage.cshtml";
+}
+
+
+<section class="content-header">
+    <div class="container-fluid">
+        <div class="row mb-2">
+            <div class="col-sm-6">
+                <h1>Delivery Address</h1>
+            </div>
+            <div class="col-sm-6">
+                <ol class="breadcrumb float-sm-right">
+                    <li class="breadcrumb-item"><a asp-action="index" asp-controller="Home">Home</a></li>
+                    <li class="breadcrumb-item active">Delivery Address</li>
+                </ol>
+            </div>
+        </div>
+    </div><!-- /.container-fluid -->
+</section>
+
+<section class="content">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-12">
+                <!-- /.card -->
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title font-weight-bold fs-1 color-primary">Delivery Address List</h3>
+                    </div>
+                    <div id="successMessage" class="alert alert-success" role="alert" style="display: none;">
+                        <strong>Holy guacamole!</strong>   Your company was successfully saved.
+                        <button id="btnClose" type="button" class="btn-close" aria-label="Close"></button>
+                    </div>
+
+                    <!-- /.card-header -->
+
+                    <div class="card-body">
+                        <table id="CompanyTable" class="table table-bordered table-striped">
+                            <p> <a id="btn-Create" class="btn btn-success"> <i class="fa fa-plus"></i> Create New Delivery Address</a> </p>
+                            <thead>
+                                <tr>
+                                    <th>Customer Name</th>
+                                    <th>Customer Email</th>
+                                    <th>Customer Phone No: </th>
+                                    <th>Customer Mobile No:</th>
+                                    <th>Customer Address</th>
+                                    <th>Active</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
+
+                <!-- /.card -->
+            </div>
+            <!-- /.col -->
+        </div>
+        <!-- /.row -->
+    </div>
+    <!-- /.container-fluid -->
+</section>
+
+
+
+<div class="modal  fade " id="modelCreate" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAddEmployee" aria-hidden="true">
+    <div class="modal-dialog modal-xl ">
+        <div class="modal-content w-auto">
+            <div class="modal-header">
+                <h4 class="modal-title" id="myModalLabelAddEmployee">Add Delivery Address</h4>
+                <h4 class="modal-title" style="display:none;" id="myModalLabelUpdateEmployee">Update Delivery Address</h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="CompanyForm">
+                    <div class="card-body">
+                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label asp-for="UserId"></label>
+                                            <select class="form-control" asp-for="UserId" id="userDropdown">
+                                                <option value="">Select User</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="Address" class="control-label"></label>
+                                            <input asp-for="Address" placeholder="Enter Your Address" class="form-control" id="address" />
+                                            <span asp-validation-for="Address" class="text-danger"></span>
+                                        </div>
+                                       
+                                    </div>
+                                    <div class="col-md-6">
+
+                                        <div class="form-group">
+                                            <label asp-for="Phone" class="control-label"></label>
+                                            <input asp-for="Phone" placeholder="Enter Phone Number" class="form-control" id="phone" />
+                                            <span asp-validation-for="Phone" class="text-danger"></span>
+                                        </div>
+                                        <div class="form-group">
+                                            <label asp-for="Mobile" class="control-label"></label>
+                                            <input asp-for="Mobile" placeholder="Enter Mobile Number" class="form-control" id="mobile" />
+                                            <span asp-validation-for="Mobile" class="text-danger"></span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            @* <div class="col-md-6">
+                            <div class="row">
+                            <div class="col-md-6">
+
+
+                            </div>
+                            <div class="col-md-6">
+
+                            </div>
+                            </div>
+                            </div> *@
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary" id="btnSave">Save</button>
+                <button type="button" class="btn btn-primary" id="btnUpdate">Update</button>
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+
+<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteAndDetailsModel" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                Are you sure you want to delete the following Delivery Address ?
+            </div>
+
+            <div class="modal-body" id="companyDetails">
+                <!-- Company details will be populated dynamically by jQuery -->
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="btnDelete">Delete</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script src="~/js/inventory/DeliveryAddress/DeliveryAddress.js"></script>
+}
+

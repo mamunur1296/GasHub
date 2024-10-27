@@ -1,0 +1,27 @@
+﻿@model GasHub.Models.ViewModels.ProductViewModel
+@{
+    ViewData["Title"] = "Home Page";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+<partial name="_HeroPartialView" />
+
+<partial name="_FoodCatagory1PartialView" model="Model" />
+<partial name="_FoodBanner1PartialView" />
+<partial name="_BrandSectionPartialView" />
+
+<partial name="_FoodCatagoryPartialView" model="Model" />
+
+<partial name="_MarquePartialView" />
+<partial name="_ChooseUsPartialView" />
+<partial name="_AboutPartialView" />
+
+
+<partial name="_MainCtaBannerPartialView" />
+<partial name="_BookingPartialView" />
+@section Scripts {
+    <script src="~/js/inventory/product/getallproductfiltering.js"></script>
+}

@@ -1,0 +1,94 @@
+﻿@model GasHub.Dtos.AddressDtos
+@using System.Security.Claims;
+@using Microsoft.IdentityModel.JsonWebTokens;
+@{
+    ViewData["Title"] = "AddAddress";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    var userName = string.Empty;
+    var userId = string.Empty;
+    var role = string.Empty;
+
+    if (User.Identity.IsAuthenticated)
+    {
+        var claimsIdentity = User.Identity as ClaimsIdentity;
+        if (claimsIdentity != null)
+        {
+            var userNameClaim = claimsIdentity.FindFirst(ClaimTypes.Name);
+            var userIdClaim = claimsIdentity.FindFirst("UserId") ?? claimsIdentity.FindFirst(ClaimTypes.NameIdentifier); // Try both "UserId" and ClaimTypes.NameIdentifier
+
+            if (userNameClaim != null)
+            {
+                userName = userNameClaim.Value;
+            }
+
+            if (userIdClaim != null)
+            {
+                userId = userIdClaim.Value;
+            }
+        }
+    }
+}
+<section class="contact-section section-padding pt-0 section-bg">
+    <div class="container">
+        <div class="contact-area">
+            <div class="row justify-content-center">
+                <!-- Changed justify-content-between to justify-content-center -->
+                <div class="col-xl-5 col-lg-5 mt-5 mt-lg-0 mx-auto">
+                    <!-- Changed ms-auto to mx-auto -->
+                    <div class="contact-form-items">
+                        <div class="contact-title">
+                            <h3 class="wow fadeInUp" data-wow-delay=".3s"> Dalivary Address  </h3>
+                            <p class="wow fadeInUp" data-wow-delay=".5s">Your email address will not be published. Required fields are marked *</p>
+                        </div>
+                        @if (!string.IsNullOrEmpty(ViewBag.errorMessage))
+                        {
+                            <div class="alert alert-danger">
+                                @ViewBag.errorMessage
+                            </div>
+                        }
+                        <form method="post" asp-action="AddAddressToDb" asp-controller="Home" >
+                            <div class="row g-4">
+
+                                <div class="col-lg-12 wow " data-wow-delay=".3s" hidden="true">
+                                    <div class="form-clt">
+                                        <input asp-for="UserId" value="@userId" />
+                                        <span asp-validation-for="UserId" class="text-danger"></span>
+                                    </div>
+                                </div
+                                <div class="col-lg-12 wow " data-wow-delay=".3s">
+                                    <div class="form-clt">
+                                        <input asp-for="ContactNumber"  placeholder="Enter Your Phone Number" />
+                                        <span asp-validation-for="ContactNumber" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                 <div class="col-lg-12 wow " data-wow-delay=".3s">
+                                    <div class="form-clt">
+                                        <input asp-for="District"  placeholder="Enter Your District" />
+                                        <span asp-validation-for="District" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                 <div class="col-lg-12 wow " data-wow-delay=".3s">
+                                    <div class="form-clt">
+                                        <input asp-for="StreetAddress"  placeholder="Enter Your Road no , House no etc.." />
+                                        <span asp-validation-for="StreetAddress" class="text-danger"></span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-12 w-100 wow fadeInUp mt-5" data-wow-delay=".8s">
+                                    <button type="submit" class="btn w-100 btn-dark" id="btnRegister">
+                                        Submit
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+
