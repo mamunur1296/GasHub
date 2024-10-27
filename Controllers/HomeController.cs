@@ -12,6 +12,9 @@ namespace GasHub.Controllers
 {
     public class HomeController : Controller
     {
+
+
+
         private readonly IClientServices<Product> _productServices;
         private readonly IClientServices<Company> _companyServices;
         private readonly IClientServices<ProductDiscunt> _productDiscuntServices;
