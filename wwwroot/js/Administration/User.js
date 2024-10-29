@@ -201,6 +201,7 @@ $('#btn-Create').click(async function () {
     $('#btnSave').show();
     $('#btnUpdate').hide();
     await populateRoleDropdown();
+    await populateTraderDropdown();
 });
 
 async function populateRoleDropdown() {
@@ -227,6 +228,31 @@ async function populateRoleDropdown() {
         // Handle error
     }
 }
+async function populateTraderDropdown() {
+    debugger
+    try {
+        const data = await $.ajax({
+            url: '/Trader/GetallTrader',
+            type: 'get',
+            dataType: 'json',
+            contentType: 'application/json;charset=utf-8'
+        });
+
+        // Clear existing options
+        $('#TraderDropdown').empty();
+        // Add default option
+        //$('#RolesDropdown').append('<option value="">Select role</option>');
+        // Add user options
+        console.log(data.data);
+        $.each(data.data, function (index, role) {
+            $('#TraderDropdown').append('<option value="' + role.id + '">' + role.name + '</option>');
+        });
+    } catch (error) {
+        console.error(error);
+        // Handle error
+    }
+}
+
 
 
 // Function to handle Enter key press

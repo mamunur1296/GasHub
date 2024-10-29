@@ -29,7 +29,7 @@ namespace GasHub.Models
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,12}$", ErrorMessage = "Password must be between 8 and 12 characters and contain at least one uppercase letter, one lowercase letter, and one numeric digit.")]
         [DisplayName("Password")]
         public string Password { get; set; }
-
+        public Guid? TraderId { get; set; }
         [Required(ErrorMessage = "Confirm Password is Required")]
         [Compare("Password", ErrorMessage = "Password and confirmation password do not match.")]
         [DisplayName("Confirm Password")]

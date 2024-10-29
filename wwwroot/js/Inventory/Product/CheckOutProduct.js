@@ -493,7 +493,7 @@ async function navigateToConfirmOrder() {
                     ProductId: product.ProductId,
                     ReturnProductId: productReturn.id,
                     TransactionNumber: TranjuctionNumber,
-                    Comments: "This is a comment"
+                    Comments: `${storedProducts[product.ProductId]}`
                 };
                 
                 debugger

@@ -1,0 +1,21 @@
+﻿<!-- Delete Confirmation Modal -->
+<div class="modal fade" id="deleteAndDetailsModel" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                Are you sure you want to delete the following Item ?
+            </div>
+            <div id="DeleteErrorMessage" class="modal-header" role="alert" style="display: none;">
+                <!-- Error message will be displayed here if deletion fails -->
+            </div>
+            <div class="modal-body" id="companyDetails">
+                <!-- Company details will be populated dynamically by jQuery -->
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" id="btnDelete">Delete</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal">Cancel</button>
+            </div>
+        </div>
+    </div>
+</div>

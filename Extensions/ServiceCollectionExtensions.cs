@@ -34,6 +34,8 @@ namespace GasHub.Extensions
             services.AddScoped<IClientServices<Trader>, ClientServices<Trader>>(); 
             services.AddScoped<IClientServices<Valve>, ClientServices<Valve>>();
             services.AddScoped<IClientServices<Register>, ClientServices<Register>>();
+            services.AddScoped<IClientServices<Purchase>, ClientServices<Purchase>>();
+            services.AddScoped<IClientServices<PurchaseItem>, ClientServices<PurchaseItem>>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

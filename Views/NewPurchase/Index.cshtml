@@ -1,0 +1,126 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_AdminLayoutPage.cshtml";
+}
+
+<div>
+</div>
+
+
+<div class="m-2">
+    <div class="row">
+        <!-- Product Section -->
+        <div class="col-md-8">
+            <div class="row mb-5">
+                <!-- First column with button and form -->
+                <div class="col-4 d-flex align-items-center justify-content-start">
+                    <button id="addNewSupplirButton" type="button" class="btn btn-success">
+                        <i class="fa fa-plus"></i>
+                    </button>
+                    <form asp-action="AddCustomer" id="addCustomerForm" method="post" class="w-75 d-flex">
+                        <input type="text" id="phoneNumber" class="form-control" placeholder="Type to search Supplier phone..." />
+                        <input type="hidden" id="selectedCustomerId" name="customerId" />
+                    </form>
+                </div>
+
+                <!-- Second column for Supplier Name -->
+                <div class="col-4 d-flex align-items-center">
+                    <p class="mb-0"><strong>Company Name:</strong> <span id="supplierName">N/A</span></p>
+                </div>
+
+                <!-- Third column for Supplier Phone -->
+                <div class="col-4 d-flex align-items-center">
+                    <p class="mb-0"><strong>Compnay Phone:</strong> <span id="supplierPhone">N/A</span></p>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <!-- Search Product -->
+                <div class="row mb-3">
+                    <label class="col-form-label col-2 text-1xl me-2" for="selectProduct">Select Product:</label>
+
+                    <div class="col-9">
+                        <form id="SerchProductForm" method="post" class="d-flex">
+                            <!-- This input field is used for searching -->
+                            <input type="text" id="tagsProduct" class="form-control me-2" placeholder="Type to search products..." />
+                            <!-- This hidden input field is used to store the selected productId -->
+                            <input type="hidden" id="selectedProductId" name="productId" />
+                        </form>
+                    </div>
+
+                    <div class="col-1 d-flex justify-content-between">
+                        <button id="CreateProductBtn" class="btn btn-success" title="Add Product"><i class="fa fa-plus"></i></button>
+                    </div>
+                </div>
+
+                <!-- Product Table -->
+                <!-- Product Table -->
+                <div class="table-responsive">
+                    <table class="table table-bordered table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th scope="col" class="text-center">Delete</th>
+                                <th scope="col" class="text-center">Item</th>
+                                <th scope="col" class="text-center">Price</th>
+                                <th scope="col" class="text-center">Qty</th>
+                                <th scope="col" class="text-center">Disc </th>
+                                <th scope="col" class="text-center">Total</th>
+                                <th scope="col" class="text-center">Update</th>
+                            </tr>
+                        </thead>
+                        <tbody id="productTableBody">
+                            <!-- Product rows will be dynamically added here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- Customer and Payment Section -->
+        <div class="col-md-4 h-100" id="PurchaseProductVawser">
+        </div>
+    </div>
+
+    <!-- Container for dynamically loaded modal -->
+    <div id="modalSuccess"></div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="productModal" tabindex="-1" role="dialog" aria-labelledby="productModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="productModalLabel">Product Details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="productForm">
+                    <div class="form-group">
+                        <label for="productPrice">Price</label>
+                        <input type="number" class="form-control" id="productPrice" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productQuantity">Quantity</label>
+                        <input type="number" class="form-control" id="productQuantity" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="productDiscount">Discount</label>
+                        <input type="number" class="form-control" id="productDiscount" value="0">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveProduct">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+    <script type="module" src="~/js/pointofpurchase/newpurchase.js" asp-append-version="true"></script>
+}
