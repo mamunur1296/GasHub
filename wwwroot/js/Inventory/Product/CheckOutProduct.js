@@ -442,63 +442,122 @@ async function ConfirmOrderBtnActivity(isActive = false) {
 
 async function navigateToConfirmOrder() {
     debugger
+    const userId = $('#address-container').data('user-id')?.toString();
+    if (!userId) {
+        console.error("User ID not found in address container.");
+        return;
+    }
+
+    const storedProducts = JSON.parse(localStorage.getItem('productIds') || '{}');
+    if (!Object.keys(storedProducts).length) {
+        console.error("No products found in local storage.");
+        return;
+    }
+
+    // Create FormData and populate it
+    const formData = new FormData();
+    formData.append('UserID', userId);
+
+    for (const [productId, quantity] of Object.entries(storedProducts)) {
+        formData.append(`ProductIdAndQuentity[${productId}]`, quantity);
+    }
+
     try {
-        const userId = $('#address-container').data('user-id');
-        const storedProducts = JSON.parse(localStorage.getItem('productIds')) || {};
-        const products = await getProduct();
-        const loginUser = await GetLoginUserById(userId);
+        const response = await $.ajax({
+            url: '/Order/ConfirmOrder',
+            type: 'POST',
+            contentType: false,       // Important for FormData
+            processData: false,       // Prevents jQuery from processing the data
+            data: formData,
+            dataType: 'json'
+        });
 
-        const returnProducts = [];
+        if (response.success === true) {
+            alert(response.data);
+            localStorage.removeItem('productIds')
+            window.location.href = '/Home/Product';
+        } else {
+            console.error("Order confirmation failed.", response);
+        }
+    } catch (error) {
+        console.error("Error during order confirmation:", error);
+    }
 
-        for (const productId of Object.keys(storedProducts)) {
-            const product = products.find(p => p.id == productId);
-            if (product) {
-                const returnProduct = {
-                    ProductId: product.id,
-                    Name: product.name,
-                    ProdSizeId: product.prodSizeId,
-                    ProdValveId: product.prodValveId,
-                };
 
-                console.log("Updating product:", returnProduct);
 
-                const responseReturnProduct = await $.ajax({
-                    url: '/ProdReturn/CreatebyUser',
-                    type: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(returnProduct),
-                    dataType: 'json'
-                });
 
-                if (responseReturnProduct.success && responseReturnProduct.status === 200) {
-                    returnProducts.push(returnProduct);
-                } else {
-                    console.error('Failed to update product:', returnProduct);
-                    return; // Exit the function if any return product update fails
-                }
-            }
+
+    
+}
+
+async function processReturnProducts(storedProducts, products) {
+    const returnProducts = [];
+
+    for (const productId of Object.keys(storedProducts)) {
+        const product = products.find(p => p.id === productId);
+        if (!product) {
+            console.warn(`Product with ID ${productId} not found in products list.`);
+            continue;
         }
 
-        // Proceed to create orders only if all return products are successfully updated
-        debugger
-        const TranjuctionNumber = await generateTransactionNumber();
-        for (const product of returnProducts) {
-            const productReturnList = await getAllReturnProductList();
-            const productReturn = productReturnList.find(p => p.productId == product.ProductId);
+        const returnProduct = {
+            ProductId: product.id,
+            Name: product.name,
+            ProdSizeId: product.prodSizeId,
+            ProdValveId: product.prodValveId,
+        };
 
-            if (productReturn) {
-                
-                const order = {
-                    UserId: userId,
-                    ProductId: product.ProductId,
-                    ReturnProductId: productReturn.id,
-                    TransactionNumber: TranjuctionNumber,
-                    Comments: `${storedProducts[product.ProductId]}`
-                };
-                
-                debugger
+        try {
+            const response = await $.ajax({
+                url: '/ProdReturn/CreatebyUser',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(returnProduct),
+                dataType: 'json'
+            });
 
-                const createOrderResponse = await $.ajax({
+            if (response.success && response.status === 200) {
+                returnProducts.push(returnProduct);
+                console.log("Product return created:", returnProduct);
+            } else {
+                console.error('Failed to create return product:', returnProduct, response);
+            }
+        } catch (error) {
+            console.error('Error updating product:', returnProduct, error);
+        }
+    }
+
+    if (!returnProducts.length) {
+        console.warn("No return products were created.");
+    }
+
+    return returnProducts;
+}
+
+async function createOrders(userId, returnProducts, productReturnList, storedProducts) {
+    const transactionNumber = await generateTransactionNumber();
+    debugger;
+
+    const createdOrders = await Promise.all(
+        returnProducts.map(async (product) => {
+            const productReturn = productReturnList.find(p => p.productId === product.ProductId);
+
+            if (!productReturn) {
+                console.error(`No matching return product found for product ID ${product.ProductId}.`);
+                return null; // Skips this product
+            }
+            debugger;
+
+            const order = {
+                UserId: userId,
+                ProductId: product.ProductId,
+                ReturnProductId: productReturn.id,
+                TransactionNumber: transactionNumber,
+                Comments: `${storedProducts[product.ProductId]}` || ""
+            };
+
+            try {
+                const response = await $.ajax({
                     url: '/Order/CreatebyUser',
                     type: 'POST',
                     contentType: 'application/json',
@@ -506,24 +565,29 @@ async function navigateToConfirmOrder() {
                     dataType: 'json'
                 });
 
-                if (!(createOrderResponse.success && createOrderResponse.status === 200)) {
-                    //console.error('Failed to create order:', order);
-                    return; // Exit the function if any order creation fails
+                if (response.success && response.status === 200) {
+                    console.log("Order created:", order);
+                    return order; // Adds to createdOrders if successful
+                } else {
+                    console.error('Failed to create order:', order, response);
+                    return null;
                 }
-                console.log("Order created:", order);
-            } else {
-                console.error('No matching return product found for order creation:', product);
-                return; // Exit the function if no matching return product found
+            } catch (error) {
+                console.error('Error creating order:', order, error);
+                return null;
             }
-        }
+        })
+    );
 
-        // Redirect to confirm order page only if all operations are successful
-        window.location.href = '/Home/ConfirmOrder';
-
-    } catch (error) {
-        console.error('Error navigating to confirm order:', error);
+    const successfulOrders = createdOrders.filter(order => order !== null);
+    if (!successfulOrders.length) {
+        console.warn("No orders were created.");
     }
 }
+
+
+
+
 
 
 // Function to generate a random alphanumeric string of a given length

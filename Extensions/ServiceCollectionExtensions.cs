@@ -36,6 +36,7 @@ namespace GasHub.Extensions
             services.AddScoped<IClientServices<Register>, ClientServices<Register>>();
             services.AddScoped<IClientServices<Purchase>, ClientServices<Purchase>>();
             services.AddScoped<IClientServices<PurchaseItem>, ClientServices<PurchaseItem>>();
+            services.AddScoped<IClientServices<ConfirmOrderDTOs>, ClientServices<ConfirmOrderDTOs>>();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)

@@ -1,85 +1,90 @@
 ﻿$(document).ready(async function () {
-    await GetProdReturnList();
+    await GetOrderList();
 });
 
-async function GetProdReturnList() {
+async function GetOrderList() {
     debugger
     try {
-        const prodReturn = await $.ajax({
-            url: '/ProdReturn/GetAllConfirmCustomer',
+        const orders = await $.ajax({
+            url: '/Order/GetDispatchOrderList',
             type: 'get',
             dataType: 'json',
             contentType: 'application/json;charset=utf-8'
         });
-        const product = await $.ajax({
+        const userData = await $.ajax({
+            url: '/User/GetallUser',
+            type: 'get',
+            dataType: 'json',
+            contentType: 'application/json;charset=utf-8'
+        });
+        const productData = await $.ajax({
             url: '/Product/GetAllProduct',
             type: 'get',
             dataType: 'json',
             contentType: 'application/json;charset=utf-8'
         });
-        const productSize = await $.ajax({
-            url: '/ProductSize/GetallProductSize',
+        const returnProductData = await $.ajax({
+            url: '/ProdReturn/GetallProdReturn',
             type: 'get',
             dataType: 'json',
             contentType: 'application/json;charset=utf-8'
         });
-        const productValv = await $.ajax({
-            url: '/Valve/GetallValve',
-            type: 'get',
-            dataType: 'json',
-            contentType: 'application/json;charset=utf-8'
-        });
-
-        if (prodReturn && prodReturn.data) { // Check if orders and orders.data exist
-            onSuccess(prodReturn.data, product.data, productSize.data, productValv.data);
+       
+        if (orders && orders.data) { // Check if orders and orders.data exist
+            onSuccess(orders.data, userData.data, productData.data, returnProductData.data);
         }
     } catch (error) {
         console.log('Error:', error);
-
+       
     }
 }
 
 
-function onSuccess(prodReturn, product, productSize, productValv) {
+function onSuccess(orders, usersData, productsData, returnProductsData) {
     debugger
-    console.log('prodReturn:', prodReturn);
-    console.log('product:', product);
-    console.log('productSize:', productSize);
-    console.log('productValv:', productValv);
+    console.log('orders:', orders);
+    console.log('usersData:', usersData);
+    console.log('productsData:', productsData);
+    console.log('returnProductsData:', returnProductsData);
 
-    if (prodReturn && product && productSize && productValv) {
+    if (orders && usersData && productsData && returnProductsData) {
+        // Convert users array to a map for easy lookup
+        var usersMap = {};
+        usersData.forEach(function (user) {
+            usersMap[user.id] = user;
+        });
+
         // Convert products array to a map for easy lookup
         var productsMap = {};
-        product.forEach(function (product) {
+        productsData.forEach(function (product) {
             productsMap[product.id] = product;
         });
-        // Convert users array to a map for easy lookup
-        var productSizeMap = {};
-        productSize.forEach(function (productSize) {
-            productSizeMap[productSize.id] = productSize;
-        });
+
         // Convert return products array to a map for easy lookup
-        var productValvMap = {};
-        productValv.forEach(function (Valv) {
-            productValvMap[Valv.id] = Valv;
+        var returnProductsMap = {};
+        returnProductsData.forEach(function (returnProduct) {
+            returnProductsMap[returnProduct.id] = returnProduct;
         });
 
         // Merge order and user data
-        var mergedData = prodReturn.map(function (preturn) {
-            var product = productsMap[preturn.productId];
-            var productSize = productSizeMap[preturn.prodSizeId];
-            var productValv = productValvMap[preturn.prodValveId];
-
-            console.log('preturn:', preturn);
-            console.log('productSize:', productSize);
+        var mergedData = orders.map(function (order) {
+            var user = usersMap[order.userId];
+            var product = productsMap[order.productId];
+            var returnProduct = returnProductsMap[order.returnProductId];
+          
+            console.log('order:', order);
+            console.log('user:', user);
             console.log('product:', product);
-            console.log('productValv:', productValv); 
-            if (preturn) {
+            console.log('returnProduct:', returnProduct);
+            if (order ) {
                 return {
-                    id: preturn.id,
-                    productName: product.name,
-                    productSize: productSize.size + " " + productSize.unit,
-                    productValve: productValv.name + " " + productValv.unit,
+                    id: order.id,
+                    fullName: user?.firstName + ' ' + user?.lastName,
+                    phone: user ? user.phoneNumber : "No Number",
+                    productOrder: product ? product.name : "No Order",
+                    productReturn: returnProduct ? returnProduct.name : "No Return",
+                    isActive: order.isActive,
+                    TransactionNumber: order.transactionNumber,
                 };
 
             }
@@ -98,21 +103,33 @@ function onSuccess(prodReturn, product, productSize, productValv) {
             data: mergedData,
             columns: [
                 {
-                    data: 'productName',
+                    data: 'fullName',
                     render: function (data, type, row, meta) {
                         return data;
                     }
                 },
                 {
-                    data: 'productSize',
+                    data: 'TransactionNumber',
                     render: function (data, type, row, meta) {
                         return data;
                     }
                 },
                 {
-                    data: 'productValve',
+                    data: 'productOrder',
                     render: function (data, type, row, meta) {
                         return data;
+                    }
+                },
+                {
+                    data: 'productReturn',
+                    render: function (data, type, row, meta) {
+                        return data;
+                    }
+                },
+                {
+                    data: 'isActive',
+                    render: function (data, type, row, meta) {
+                        return data ? '<button class="btn btn-sm btn-primary rounded-pill">Yes</button>' : '<button class="btn btn-sm btn-danger rounded-pill">No</button>';
                     }
                 },
                 {
@@ -120,7 +137,7 @@ function onSuccess(prodReturn, product, productSize, productValv) {
                     render: function (data) {
                         return '<button class="btn btn-primary btn-sm ms-1" onclick="editCompany(\'' + data + '\')">Edit</button>' + ' ' +
                             '<button class="btn btn-info btn-sm ms-1" onclick="showDetails(\'' + data + '\')">Details</button>' + ' ' +
-                            '<button class="btn btn-danger btn-sm ms-1" onclick="deleteCompany(\'' + data + '\')">Delete</button>';
+                            '<button class="btn btn-primary btn-sm ms-1" onclick="OrderConfirmed(\'' + data + '\')">Confirmed</button>';
                     }
                 }
             ]
@@ -136,7 +153,7 @@ function onSuccess(prodReturn, product, productSize, productValv) {
 
 
 // Initialize validation
-const companyForm = $('#CompanyForm').validate({
+const companyForm = $('#PlasedOrderForm').validate({
     onkeyup: function (element) {
         $(element).valid();
     },
@@ -185,9 +202,9 @@ $('#btn-Create').click(function () {
     $('#modelCreate').modal('show');
     $('#btnSave').show();
     $('#btnUpdate').hide();
-    popuprodValveDropdown();
-    populateprodSizeDropdown();
+    populateUserDropdown();
     populateProductDropdown();
+    populateReturnProductDropdown();
 });
 
 
@@ -219,13 +236,13 @@ $('#btnSave').click(async function () {
     console.log("Save");
     debugger
     // Check if the form is valid
-    if ($('#CompanyForm').valid()) {
+    if ($('#PlasedOrderForm').valid()) {
         // Proceed with form submission
-        var formData = $('#CompanyForm').serialize();
+        var formData = $('#PlasedOrderForm').serialize();
         console.log(formData);
         try {
             var response = await $.ajax({
-                url: '/ProdReturn/Create',
+                url: '/Order/Create',
                 type: 'post',
                 contentType: 'application/x-www-form-urlencoded',
                 data: formData
@@ -234,9 +251,9 @@ $('#btnSave').click(async function () {
             
             if (response.success === true && response.status === 200) {
                 // Show success message
-                $('#successMessage').text('Your Prod Return was successfully saved.');
+                $('#successMessage').text('Your Order was successfully saved.');
                 $('#successMessage').show();
-                await GetProdReturnList();
+                await GetOrderList();
                 $('#CompanyForm')[0].reset();
                 $('#modelCreate').modal('hide');
             }
@@ -246,24 +263,23 @@ $('#btnSave').click(async function () {
     }
 });
 
-async function popuprodValveDropdown() {
-    debugger
+async function populateUserDropdown() {
     try {
         const data = await $.ajax({
-            url: '/Valve/GetallValve',
+            url: '/User/GetallUser',
             type: 'get',
             dataType: 'json',
             contentType: 'application/json;charset=utf-8'
         });
 
         // Clear existing options
-        $('#prodValveDropdown').empty();
+        $('#userDropdown').empty();
         // Add default option
-        $('#prodValveDropdown').append('<option value="">Select Valve </option>');
+        $('#userDropdown').append('<option value="">Select User</option>');
         // Add user options
         console.log(data.data);
-        $.each(data.data, function (index, valv) {
-            $('#prodValveDropdown').append('<option value="' + valv.id + '">' + valv.unit + '</option>');
+        $.each(data.data, function (index, user) {
+            $('#userDropdown').append('<option value="' + user.id + '">' + user.userName + '</option>');
         });
     } catch (error) {
         console.error(error);
@@ -283,7 +299,7 @@ async function populateProductDropdown() {
         // Clear existing options
         $('#productDropdown').empty();
         // Add default option
-        $('#productDropdown').append('<option value="">Select Product Name</option>');
+        $('#productDropdown').append('<option value="">Select User</option>');
         // Add user options
         console.log(data.data);
         $.each(data.data, function (index, product) {
@@ -294,24 +310,24 @@ async function populateProductDropdown() {
         // Handle error
     }
 }
-async function populateprodSizeDropdown() {
+async function populateReturnProductDropdown() {
     debugger
     try {
         const data = await $.ajax({
-            url: '/ProductSize/GetallProductSize',
+            url: '/ProdReturn/GetallProdReturn',
             type: 'get',
             dataType: 'json',
             contentType: 'application/json;charset=utf-8'
         });
 
         // Clear existing options
-        $('#prodSizeDropdown').empty();
+        $('#ReturnProductDropdown').empty();
         // Add default option
-        $('#prodSizeDropdown').append('<option value="">Select Product Size</option>');
+        $('#ReturnProductDropdown').append('<option value="">Select User</option>');
         // Add user options
         console.log(data.data);
-        $.each(data.data, function (index, ProductSize) {
-            $('#prodSizeDropdown').append('<option value="' + ProductSize.id + '">' + ProductSize.size + '</option>');
+        $.each(data.data, function (index, returnProduct) {
+            $('#ReturnProductDropdown').append('<option value="' + returnProduct.id + '">' + returnProduct.name + '</option>');
         });
     } catch (error) {
         console.error(error);
@@ -319,7 +335,10 @@ async function populateprodSizeDropdown() {
     }
 }
 
-
+// Call the function to populate the dropdown when the page loads
+populateUserDropdown();
+populateProductDropdown();
+populateReturnProductDropdown();
 
 // Optionally, you can refresh the user list on some event, like a button click
 $('#refreshButton').click(function () {
@@ -331,15 +350,15 @@ async function editCompany(id) {
     console.log("Edit company with id:", id);
     $('#myModalLabelUpdateEmployee').show();
     $('#myModalLabelAddEmployee').hide();
+    await populateUserDropdown();
     await populateProductDropdown();
-    await popuprodValveDropdown();
-    await populateprodSizeDropdown();
+    await populateReturnProductDropdown();
     // Reset form validation
     debugger
 
     try {
         const data = await $.ajax({
-            url: '/ProdReturn/GetById/' + id,
+            url: '/Order/GetById/' + id,
             type: 'get',
             dataType: 'json',
             contentType: 'application/json;charset=utf-8'
@@ -348,10 +367,11 @@ async function editCompany(id) {
         // Populate form fields with company data
         $('#btnSave').hide();
         $('#btnUpdate').show();
-        $('#Name').val(data.name);
-        $('#prodValveDropdown').val(data.prodValveId);
+        $('#userDropdown').val(data.userId);
         $('#productDropdown').val(data.productId);
-        $('#prodSizeDropdown').val(data.prodSizeId);
+        $('#ReturnProductDropdown').val(data.returnProductId);
+        $('#Comments').val(data.comments);
+        $('#TransactionNumber').val(data.transactionNumber);
 
 
         debugger
@@ -367,37 +387,7 @@ async function editCompany(id) {
     }
 }
 
-async function updateCompany(id) {
-    if ($('#CompanyForm').valid()) {
-        const formData = $('#CompanyForm').serialize();
-        console.log(formData);
-        try {
-            var response = await $.ajax({
-                url: '/ProdReturn/Update/' + id,
-                type: 'put',
-                contentType: 'application/x-www-form-urlencoded',
-                data: formData
-            });
 
-           
-            if (response.success === true && response.status === 200) {
-                // Show success message
-                $('#successMessage').text('Your Product Return was successfully updated.');
-                $('#successMessage').show();
-                // Reset the form
-                $('#CompanyForm')[0].reset();
-                // Update the company list
-                await GetProdReturnList();
-                $('#modelCreate').modal('hide');
-            }
-        } catch (error) {
-            console.log('Error:', error);
-            // Show error message
-            $('#errorMessage').text('An error occurred while updating the company.');
-            $('#errorMessage').show();
-        }
-    }
-}
 
 // Details Company
 //async function showDetails(id) {
@@ -418,30 +408,93 @@ async function updateCompany(id) {
 //    }
 //}
 
-async function deleteCompany(id) {
-    debugger
-    $('#deleteAndDetailsModel').modal('show');
+async function OrderConfirmed(id) {
+    try {
+        const data = await $.ajax({
+            url: '/Order/GetById/' + id,
+            type: 'get',
+            dataType: 'json',
+            contentType: 'application/json;charset=utf-8'
+        });
+        debugger
+        $('#userDropdown').val(data.userId);
+        $('#productDropdown').val(data.productId);
+        $('#ReturnProductDropdown').val(data.returnProductId);
+        $('#Comments').val(data.comments);
+        $('#TransactionNumber').val(data.transactionNumber);
+        
 
-    $('#companyDetails').empty();
-    $('#btnDelete').click(async function () {
-        try {
-            const response = await $.ajax({
-                url: '/ProdReturn/Delete',
-                type: 'POST',
-                data: { id: id }
-            });
-            if (response.success === true && response.status === 200) {
-                $('#deleteAndDetailsModel').modal('hide');
-                $('#successMessage').text('Your Product Return was successfully Delete .');
-                $('#successMessage').show();
-                await GetProdReturnList();
+        $('#IsConfirmed').prop('value', data.isConfirmed ? "true" : "false");
+        $('#IsPlaced').prop('value', data.isPlaced ? "true" : "false");
+        $('#IsReadyToDispatch').prop('value', data.isReadyToDispatch ? "true" : "false");
+        $('#IsDispatched').prop('value', data.isDispatched ? "true" : "false");
+        $('#IsDelivered').prop('value', data.isDelivered ? "true" : "true");
+
+        if ($('#PlasedOrderForm').valid()) {
+            const formData = $('#PlasedOrderForm').serialize();
+            debugger
+            console.log(formData);
+            try {
+                var response = await $.ajax({
+                    url: '/Order/Update/' + id,
+                    type: 'put',
+                    contentType: 'application/x-www-form-urlencoded',
+                    data: formData
+                });
+                debugger
+
+                if (response.success === true && response.status === 200) {
+                    // Show success message
+                    $('#successMessage').text('Your Order was successfully updated.');
+                    $('#successMessage').show();
+                    // Reset the form
+                    $('#PlasedOrderForm')[0].reset();
+                    // Update the company list
+                    await GetOrderList();
+                    $('#modelCreate').modal('hide');
+                }
+            } catch (error) {
+                console.log('Error:', error);
+                // Show error message
+                $('#errorMessage').text('An error occurred while updating the company.');
+                $('#errorMessage').show();
             }
-           
-        } catch (error) {
-            console.log(error);
-            $('#deleteAndDetailsModel').modal('hide');
         }
-    });
+        
+    } catch (error) {
+        console.log('Error:', error);
+    }
 }
 
+async function updateCompany(id) {
+    if ($('#PlasedOrderForm').valid()) {
+        const formData = $('#PlasedOrderForm').serialize();
+        debugger
+        console.log(formData);
+        try {
+            var response = await $.ajax({
+                url: '/Order/Update/' + id,
+                type: 'put',
+                contentType: 'application/x-www-form-urlencoded',
+                data: formData
+            });
+            debugger
 
+            if (response.success === true && response.status === 200) {
+                // Show success message
+                $('#successMessage').text('Your Order was successfully updated.');
+                $('#successMessage').show();
+                // Reset the form
+                $('#PlasedOrderForm')[0].reset();
+                // Update the company list
+                await GetOrderList();
+                $('#modelCreate').modal('hide');
+            }
+        } catch (error) {
+            console.log('Error:', error);
+            // Show error message
+            $('#errorMessage').text('An error occurred while updating the company.');
+            $('#errorMessage').show();
+        }
+    }
+}

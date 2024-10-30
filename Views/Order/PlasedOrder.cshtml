@@ -6,21 +6,7 @@
 }
 
 
-<section class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1>Order</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li class="breadcrumb-item active">Order</li>
-                </ol>
-            </div>
-        </div>
-    </div><!-- /.container-fluid -->
-</section>
+
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -28,7 +14,7 @@
                 <!-- /.card -->
                 <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title font-weight-bold fs-1 color-primary">Order List</h3>
+                        <h3 class="card-title font-weight-bold fs-1 color-primary">Placed Order List</h3>
                     </div>
                     <div id="successMessage" class="alert alert-success" role="alert" style="display: none;">
                         <strong>Holy guacamole!</strong>   Your company was successfully saved.
@@ -39,7 +25,7 @@
 
                     <div class="card-body">
                         <table id="CompanyTable" class="table table-bordered table-striped">
-                            <p> <a id="btn-Create" class="btn btn-success"> <i class="fa fa-plus"></i> Create New Order</a> </p>
+                            
                             <thead>
                                 <tr>
                                     <th>Customer Name</th>
@@ -76,13 +62,16 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <form id="CompanyForm">
+                <form id="PlasedOrderForm">
+                    <input type="hidden" id="IsConfirmed" name="IsConfirmed" />
+                    <input type="hidden" id="IsPlaced" name="IsPlaced" />
+
                     <div class="card-body">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="row">
-                                     <div class="col-md-6">
+                                    <div class="col-md-6">
                                         <div class="form-group">
                                             <label asp-for="UserId"></label>
                                             <select class="form-control" asp-for="UserId" id="userDropdown">
@@ -113,7 +102,7 @@
                                             <input asp-for="Comments" placeholder="Enter Your Name" class="form-control" name="Comments" />
                                             <span asp-validation-for="Comments" class="text-danger"></span>
                                         </div>
-                                    </div> 
+                                    </div>
                                 </div>
                             </div>
                             @* <div class="col-md-6">
@@ -170,6 +159,6 @@
 
 
 @section Scripts {
-    <script src="~/js/inventory/order/order.js"></script>
+    <script src="~/js/inventory/order/placedorder.js"></script>
 }
 

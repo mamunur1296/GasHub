@@ -23,6 +23,13 @@ namespace GasHub.Controllers
             var ProdReturn = await _prodReturnServices.GetAllClientsAsync("ProdReturn/getAllProdReturn");
             return Json(new { data = ProdReturn });
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAllConfirmCustomer()
+        {
+            var ProdReturn = await _prodReturnServices.GetAllClientsAsync("ProdReturn/getAllConfirmCustomer");
+            return Json(new { data = ProdReturn });
+        }
+
         [HttpPost]
         public async Task<IActionResult> Create( ProdReturn model)
         {

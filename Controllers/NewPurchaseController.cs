@@ -87,7 +87,7 @@ namespace GasHub.Controllers
             var result = await _purchaseServices.PostClientAsync("Purchase/Purchase", paymentItem);
             if (result.Success)
             {
-                return Json(true);
+                return Json(result);
             }
             // Process the paymentItem here (e.g., save to database)
 

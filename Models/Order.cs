@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace GasHub.Models
 {
@@ -25,6 +24,7 @@ namespace GasHub.Models
         [DisplayName("Confirmed")]
         public bool IsConfirmed { get; set; }
         public string TransactionNumber { get; set; }
+        [DisplayName("Quentity")]
         public string Comments { get; set; }
         [DisplayName("Dispatched")]
         public bool IsDispatched { get; set; }

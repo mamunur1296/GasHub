@@ -334,13 +334,17 @@ window.paymentButton = async () => {
                 contentType: 'application/json', // Set the content type to JSON
                 data: JSON.stringify(purchaseItem), // Convert the data to JSON format
                 success: function (result) {
-                    if (result) {
+                    debugger
+                    if (result.success && result.status === 201) {
                         clearAll();
-                        notification({ message: " Purchase  successfully !", type: "success", title: "Success" });
+                        alert(result.data);
+                    } else {
+                        alert("Lgoin Valid Admin OR User");
                     }
-                    
+                    debugger
                 },
                 error: function (xhr, status, error) {
+                    alert("Lgoin Valid Admin OR User");
                     console.error('Error during purchase:', xhr.responseText); // Handle error
                 }
             });

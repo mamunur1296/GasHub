@@ -370,6 +370,8 @@ async function editCompany(id) {
         $('#userDropdown').val(data.userId);
         $('#productDropdown').val(data.productId);
         $('#ReturnProductDropdown').val(data.returnProductId);
+        $('#Comments').val(data.comments);
+        $('#TransactionNumber').val(data.transactionNumber);
 
 
         debugger
