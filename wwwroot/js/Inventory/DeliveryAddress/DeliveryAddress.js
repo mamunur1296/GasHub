@@ -293,7 +293,7 @@ $('#refreshButton').click(function () {
 });
 
 // Edit Company
-async function editCompany(id) {
+window.editCompany = async function (id) {
     console.log("Edit company with id:", id);
     $('#myModalLabelUpdateEmployee').show();
     $('#myModalLabelAddEmployee').hide();
@@ -382,7 +382,7 @@ async function updateCompany(id) {
 //    }
 //}
 
-async function deleteCompany(id) {
+window.deleteCompany = function (id) {
     $('#deleteAndDetailsModel').modal('show');
 
     $('#companyDetails').empty();

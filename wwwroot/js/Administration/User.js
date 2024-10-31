@@ -1,4 +1,5 @@
-﻿$(document).ready(async function () {
+﻿import { notification, notificationErrors } from '../Utility/notification.js';
+$(document).ready(async function () {
     await GetUserList();
 });
 
@@ -97,6 +98,13 @@ function onSuccess(users) {
         });
     }
 }
+
+
+
+
+
+
+
 
 // Initialize validation
 const companyForm = $('#CompanyForm').validate({
@@ -290,17 +298,14 @@ $('#btnSave').click(async function () {
                 contentType: 'application/x-www-form-urlencoded',
                 data: formData
             });
-
-            $('#successMessage').text('New User was successfully saved.').hide();
             $('#UserError').text('Username is already taken.').hide();
             $('#EmailError').text('Email is already taken.').hide();
             if (response.success && response.status === 200) {
                 // Show success message
-                $('#successMessage').text('New User was successfully saved.');
-                $('#successMessage').show();
                 await GetUserList();
                 $('#CompanyForm')[0].reset();
                 $('#modelCreate').modal('hide');
+                notification({ message: "User Created successfully !", type: "success", title: "Success" });
             } else if (response.errorMessage) {
                 // Display specific error messages
                 if (response.errorMessage.includes("DuplicateUserName")) {
@@ -314,113 +319,23 @@ $('#btnSave').click(async function () {
         } catch (jqXHR) {
             var errorMessage = jqXHR.responseText || "Unknown error occurred";
             console.log('Error:', errorMessage);
-            $('#GeneralError').text('An unexpected error occurred. Please try again.').show();
+            notificationErrors({ message: "An unexpected error occurred. Please try again." });
         }
     }
 });
 
-// Edit Company
-//async function editCompany(id) {
-//    console.log("Edit company with id:", id);
-//    $('#myModalLabelUpdateEmployee').show();
-//    $('#myModalLabelAddEmployee').hide();
-//    // Reset form validation
-//    debugger
-
-//    try {
-//        const data = await $.ajax({
-//            url: '/Company/GetCompany/' + id,
-//            type: 'get',
-//            dataType: 'json',
-//            contentType: 'application/json;charset=utf-8'
-//        });
-
-//        // Populate form fields with company data
-//        $('#btnSave').hide();
-//        $('#btnUpdate').show();
-//        $('#Name').val(data.name);
-//        $('#Contactperson').val(data.contactperson);
-//        $('#ContactPerNum').val(data.contactPerNum);
-//        $('#ContactNumber').val(data.contactNumber);
-//        $('#BIN').val(data.bin);
-//        debugger
-//        resetValidation()
-//        // Show modal for editing
-//        $('#modelCreate').modal('show');
-//        // Update button click event handler
-//        $('#btnUpdate').off('click').on('click', function () {
-//            updateCompany(id);
-//        });
-//    } catch (error) {
-//        console.log('Error:', error);
-//    }
-//}
-
-
-async function updateCompany(id) {
-    if ($('#CompanyForm').valid()) {
-        const formData = $('#CompanyForm').serialize();
-        console.log(formData);
-        try {
-            const response = await $.ajax({
-                url: '/Company/Update/' + id,
-                type: 'put',
-                contentType: 'application/x-www-form-urlencoded',
-                data: formData
-            });
-
-            $('#modelCreate').modal('hide');
-            if (response === true) {
-                // Show success message
-                $('#successMessage').text('Your company was successfully updated.');
-                $('#successMessage').show();
-                // Reset the form
-                $('#CompanyForm')[0].reset();
-                // Update the company list
-                await GetCompanyList();
-            }
-        } catch (error) {
-            console.log('Error:', error);
-            // Show error message
-            $('#errorMessage').text('An error occurred while updating the company.');
-            $('#errorMessage').show();
-        }
-    }
-}
-
-// Details Company
-//async function showDetails(id) {
-//    $('#deleteAndDetailsModel').modal('show');
-//    // Fetch company details and populate modal
-//    try {
-//        const response = await $.ajax({
-//            url: '/Company/GetCompany', // Assuming this is the endpoint to fetch company details
-//            type: 'GET',
-//            data: { id: id }
-//        });
-
-//        console.log(response);
-//        // Assuming response contains company details
-//        populateCompanyDetails(response);
-//    } catch (error) {
-//        console.log(error);
-//    }
-//}
-
-function deleteCompany(id) {
-    debugger
+window.deleteCompany = function (id) {
+    
     $('#deleteAndDetailsModel').modal('show');
-
     $('#companyDetails').empty();
-    $('#btnDelete').click(function () {
+    $('#btnDelete').off('click').on('click', function () { // Unbind previous events first
         $.ajax({
             url: '/User/Delete',
             type: 'POST',
             data: { id: id },
             success: function (response) {
                 $('#deleteAndDetailsModel').modal('hide');
-                $('#successMessage').text('  User was successfully Delete....');
-                $('#successMessage').show();
+                notification({ message: "User was successfully deleted.", type: "success", title: "Success" });
                 GetUserList();
             },
             error: function (xhr, status, error) {
@@ -429,4 +344,5 @@ function deleteCompany(id) {
             }
         });
     });
-}
+};
+

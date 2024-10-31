@@ -232,7 +232,7 @@ $('#btnSave').click(async function () {
 });
 
 // Edit Company
-async function editCompany(id) {
+window.editCompany = async function (id) {
     console.log("Edit company with id:", id);
     $('#myModalLabelUpdateEmployee').show();
     $('#myModalLabelAddEmployee').hide();
@@ -270,7 +270,7 @@ async function editCompany(id) {
 }
 
 
-async function updateCompany(id) {
+window.deleteCompany = function (id) {
     if ($('#CompanyForm').valid()) {
         const formData = $('#CompanyForm').serialize();
         console.log(formData);

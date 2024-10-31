@@ -1,4 +1,6 @@
-﻿$(document).ready(async function () {
+﻿import { notification } from "../Utility/notification.js";
+
+$(document).ready(async function () {
     await GetRoleList();
     console.log("This is Role File ");
 });
@@ -162,8 +164,7 @@ $('#btnSave').click(async function () {
 
             if (response.success === true && response.status === 200 ) {
                 // Show success message
-                $('#successMessage').text('Your Role Was successfully saved....');
-                $('#successMessage').show();
+                notification({ message: "Role Created successfully !", type: "success", title: "Success" });
                 await GetRoleList();
                 $('#CompanyForm')[0].reset();
                 $('#modelCreate').modal('hide');
@@ -174,7 +175,7 @@ $('#btnSave').click(async function () {
     }
 });
 
-async function deleteCompany(id) {
+window.deleteCompany = function (id) {
     debugger
     $('#deleteAndDetailsModel').modal('show');
 
@@ -187,8 +188,7 @@ async function deleteCompany(id) {
                 data: { id: id }
             });
             if (response) {
-                $('#successMessage').text('Your Role Was successfully Delete....');
-                $('#successMessage').show();
+                notification({ message: "Role was successfully deleted.", type: "success", title: "Success" });
                 $('#deleteAndDetailsModel').modal('hide');
                 await GetRoleList();
             }

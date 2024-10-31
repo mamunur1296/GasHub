@@ -1,4 +1,6 @@
-﻿$(document).ready(async function () {
+﻿import { notification } from "../../Utility/notification.js";
+
+$(document).ready(async function () {
     await GetCompanyList();
 });
 
@@ -233,8 +235,7 @@ $('#btnSave').click(async function () {
 });
 
 // Edit Company
-async function editCompany(id) {
-    console.log("Edit company with id:", id);
+window.editCompany = async function (id) {
     $('#myModalLabelUpdateEmployee').show();
     $('#myModalLabelAddEmployee').hide();
 
@@ -322,7 +323,7 @@ async function updateCompany(id) {
 //    }
 //}
 
-function deleteCompany(id) {
+window.deleteCompany = function (id) {
     $('#deleteAndDetailsModel').modal('show');
 
     $('#companyDetails').empty();
@@ -333,8 +334,7 @@ function deleteCompany(id) {
             data: { id: id },
             success: function (response) {
                 $('#deleteAndDetailsModel').modal('hide');
-                $('#successMessage').text('Your company was successfully delete.');
-                $('#successMessage').show();
+                notification({ message: "Company was successfully deleted.", type: "success", title: "Success" });
                 GetCompanyList();
             },
             error: function (xhr, status, error) {

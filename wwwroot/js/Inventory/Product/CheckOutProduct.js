@@ -440,7 +440,7 @@ async function ConfirmOrderBtnActivity(isActive = false) {
     }
 }
 
-async function navigateToConfirmOrder() {
+window.navigateToConfirmOrder = async function () {
     debugger
     const userId = $('#address-container').data('user-id')?.toString();
     if (!userId) {

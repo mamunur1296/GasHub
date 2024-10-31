@@ -346,7 +346,7 @@ $('#refreshButton').click(function () {
 });
 
 // Edit Company
-async function editCompany(id) {
+window.editCompany = async function (id) {
     console.log("Edit company with id:", id);
     $('#myModalLabelUpdateEmployee').show();
     $('#myModalLabelAddEmployee').hide();
@@ -408,7 +408,7 @@ async function editCompany(id) {
 //    }
 //}
 
-async function OrderConfirmed(id) {
+window.OrderConfirmed = async function (id) {
     try {
         const data = await $.ajax({
             url: '/Order/GetById/' + id,
