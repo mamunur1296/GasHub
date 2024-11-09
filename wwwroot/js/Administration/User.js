@@ -132,7 +132,8 @@ const companyForm = $('#CompanyForm').validate({
             required: true
         },
         Password: {
-            required: true
+            required: true,
+            pwcheck: true
         },
         ConfirmationPassword: {
             required: true
@@ -166,7 +167,8 @@ const companyForm = $('#CompanyForm').validate({
         }
         ,
         Password: {
-            required: "Password is required."
+            required: "Password is required.",
+            pwcheck: "Password must contain at least one lowercase letter (a-z)." 
         }
         ,
         ConfirmationPassword: {
@@ -188,7 +190,9 @@ const companyForm = $('#CompanyForm').validate({
         $(element).removeClass('is-invalid');
     }
 });
-
+$.validator.addMethod("pwcheck", function (value) {
+    return /[a-z]/.test(value); // At least one lowercase letter
+});
 // Bind validation on change
 $('#CompanyForm input[type="text"]').on('change', function () {
     companyForm.element($(this));
