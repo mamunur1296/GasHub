@@ -3,23 +3,6 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_AdminLayoutPage.cshtml";
 }
-<section class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1>Company</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li class="breadcrumb-item active">Company</li>
-                </ol>
-            </div>
-        </div>
-    </div><!-- /.container-fluid -->
-</section>
-
-
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -37,8 +20,8 @@
                     <!-- /.card-header -->
 
                     <div class="card-body">
-                        <table id="CompanyTable" class="table table-bordered table-striped">
-                            <p> <a id="btn-Create" class="btn btn-success"> <i class="fa fa-plus"></i> Create New Company</a> </p>
+                        <table id="GasHub_CompanyTable" class="table table-bordered table-striped">
+                            <p> <a id="GasHub_Company_btn-Create" class="btn btn-success"> <i class="fa fa-plus"></i> Create New Company</a> </p>
                             <thead>
                                 <tr>
                                     <th>Name</th>
@@ -67,7 +50,7 @@
 
 
 
-<div class="modal  fade " id="modelCreate" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAddEmployee" aria-hidden="true" >
+<div class="modal  fade " id="GasHub_Company_modelCreate" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAddEmployee" aria-hidden="true">
     <div class="modal-dialog modal-xl ">
         <div class="modal-content w-auto">
             <div class="modal-header">
@@ -76,7 +59,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <form id="CompanyForm">
+                <form id="GasHub_Company_Form">
                     <div class="card-body">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="row">
@@ -84,17 +67,26 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label asp-for="Name" class="control-label"></label>
+                                            <label asp-for="Name" class="control-label">
+                                                Name
+                                                <span class="text-danger font-weight-bold">*</span>
+                                            </label>
                                             <input asp-for="Name" placeholder="Enter Company Name" class="form-control" name="Name" />
                                             <span asp-validation-for="Name" class="text-danger"></span>
                                         </div>
                                         <div class="form-group">
-                                            <label asp-for="Contactperson" class="control-label"></label>
+                                            <label asp-for="Contactperson" class="control-label">
+                                                Contact Person
+                                                <span class="text-danger font-weight-bold">*</span>
+                                            </label>
                                             <input asp-for="Contactperson" placeholder="Enter Contact Person" class="form-control" name="Contactperson" />
                                             <span asp-validation-for="Contactperson" class="text-danger"></span>
                                         </div>
                                         <div class="form-group">
-                                            <label asp-for="ContactNumber" class="control-label"></label>
+                                            <label asp-for="ContactNumber" class="control-label">
+                                                Phone(Office)
+                                                <span class="text-danger font-weight-bold">*</span>
+                                            </label>
                                             <input asp-for="ContactNumber" placeholder="Enter Phone(Office)" class="form-control" name="ContactNumber" />
                                             <span asp-validation-for="ContactNumber" class="text-danger"></span>
                                         </div>
@@ -102,12 +94,18 @@
                                     <div class="col-md-6">
 
                                         <div class="form-group">
-                                            <label asp-for="ContactPerNum" class="control-label"></label>
+                                            <label asp-for="ContactPerNum" class="control-label">
+                                                Phone(Personal)
+                                                <span class="text-danger font-weight-bold">*</span>
+                                            </label>
                                             <input asp-for="ContactPerNum" placeholder="Enter Phone(Personal)" class="form-control" name="ContactPerNum" />
                                             <span asp-validation-for="ContactPerNum" class="text-danger"></span>
                                         </div>
                                         <div class="form-group">
-                                            <label asp-for="BIN" class="control-label"></label>
+                                            <label asp-for="BIN" class="control-label">
+                                                BIN
+                                                <span class="text-danger font-weight-bold">*</span>
+                                            </label>
                                             <input asp-for="BIN" placeholder=" Enter Business Identification Number" class="form-control" name="BIN" />
                                             <span asp-validation-for="BIN" class="text-danger"></span>
                                         </div>
@@ -147,7 +145,7 @@
 
 
 <!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteAndDetailsModel" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+<div class="modal fade" id="GasHub_Company_deleteAndDetailsModel" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">

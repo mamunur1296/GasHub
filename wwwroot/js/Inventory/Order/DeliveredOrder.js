@@ -372,7 +372,13 @@ window.editCompany = async function (id) {
         $('#ReturnProductDropdown').val(data.returnProductId);
         $('#Comments').val(data.comments);
         $('#TransactionNumber').val(data.transactionNumber);
-
+        $('#IsDelivered').val(data.isDelivered);
+        $('#IsPlaced').val(data.isPlaced);
+        $('#IsHold').val(data.isHold);
+        $('#IsConfirmed').val(data.isConfirmed);
+        $('#IsReadyToDispatch').val(data.isReadyToDispatch);
+        $('#IsDispatched').val(data.isDispatched);
+        $('#IsCancel').val(data.isCancel);
 
         debugger
         resetValidation()

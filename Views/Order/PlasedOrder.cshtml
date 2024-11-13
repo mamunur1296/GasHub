@@ -24,7 +24,7 @@
                     <!-- /.card-header -->
 
                     <div class="card-body">
-                        <table id="CompanyTable" class="table table-bordered table-striped">
+                        <table id="GasHub_Place_Order_Table" class="table table-bordered table-striped">
                             
                             <thead>
                                 <tr>
@@ -53,7 +53,7 @@
 
 
 
-<div class="modal  fade " id="modelCreate" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAddEmployee" aria-hidden="true">
+<div class="modal  fade " id="GasHub_Place_Order_modelCreate" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAddEmployee" aria-hidden="true">
     <div class="modal-dialog modal-xl ">
         <div class="modal-content w-auto">
             <div class="modal-header">
@@ -65,6 +65,11 @@
                 <form id="PlasedOrderForm">
                     <input type="hidden" id="IsConfirmed" name="IsConfirmed" />
                     <input type="hidden" id="IsPlaced" name="IsPlaced" />
+                    <input type="hidden" id="IsReadyToDispatch" name="IsReadyToDispatch" />
+                    <input type="hidden" id="IsDispatched" name="IsDispatched" />
+                    <input type="hidden" id="IsDelivered" name="IsDelivered" />
+                    <input type="hidden" id="IsCancel" name="IsCancel" />
+                    <input type="hidden" id="IsHold" name="IsHold" />
 
                     <div class="card-body">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>

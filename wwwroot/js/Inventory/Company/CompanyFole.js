@@ -1,4 +1,4 @@
-﻿import { notification } from "../../Utility/notification.js";
+﻿import { notification, notificationErrors } from "../../Utility/notification.js";
 
 $(document).ready(async function () {
     await GetCompanyList();
@@ -26,11 +26,11 @@ async function GetCompanyList() {
 
 function onSuccess(companies) {
     if (companies) {
-        if ($.fn.DataTable.isDataTable('#CompanyTable')) {
+        if ($.fn.DataTable.isDataTable('#GasHub_CompanyTable')) {
             // If initialized, destroy the DataTable first
-            $('#CompanyTable').DataTable().destroy();
+            $('#GasHub_CompanyTable').DataTable().destroy();
         }
-        $('#CompanyTable').dataTable({
+        $('#GasHub_CompanyTable').dataTable({
             processing: true,
             lengthChange: true,
             lengthMenu: [[5, 10, 20, 30, -1], [5, 10, 20, 30, 'All']],
@@ -89,7 +89,7 @@ function onSuccess(companies) {
 }
 
 // Initialize validation
-const companyForm = $('#CompanyForm').validate({
+const GasHub_Company_Form = $('#GasHub_Company_Form').validate({
     onkeyup: function (element) {
         $(element).valid();
     },
@@ -161,22 +161,23 @@ const companyForm = $('#CompanyForm').validate({
 });
 
 // Bind validation on change
-$('#CompanyForm input[type="text"]').on('change', function () {
-    companyForm.element($(this));
+$('#GasHub_Company_Form input[type="text"]').on('change', function () {
+    GasHub_Company_Form.element($(this));
 });
-$('#CompanyForm input[type="text"]').on('focus', function () {
-    companyForm.element($(this));
+$('#GasHub_Company_Form input[type="text"]').on('focus', function () {
+    GasHub_Company_Form.element($(this));
 });
 function resetValidation() {
-    companyForm.resetForm(); // Reset validation
+    GasHub_Company_Form.resetForm(); // Reset validation
     $('.form-group .invalid-feedback').remove(); // Remove error messages
-    $('#CompanyForm input').removeClass('is-invalid'); // Remove error styling
+    $('#GasHub_Company_Form input').removeClass('is-invalid'); // Remove error styling
 }
 
 
-$('#btn-Create').click(function () {
-    $('#modelCreate input[type="text"]').val('');
-    $('#modelCreate').modal('show');
+$('#GasHub_Company_btn-Create').off("click").click(function (e) {
+    e.preventDefault;
+    $('#GasHub_Company_modelCreate input[type="text"]').val('');
+    $('#GasHub_Company_modelCreate').modal('show');
     $('#btnSave').show();
     $('#btnUpdate').hide();
 });
@@ -197,20 +198,20 @@ function handleEnterKey(event) {
 
 
 // Open modal and focus on the first input field
-$('#modelCreate').on('shown.bs.modal', function () {
-    $('#CompanyForm input:first').focus();
+$('#GasHub_Company_modelCreate').on('shown.bs.modal', function () {
+    $('#GasHub_Company_Form input:first').focus();
 });
 
 // Listen for Enter key press on input fields
-$('#modelCreate').on('keypress', 'input', handleEnterKey);
+$('#GasHub_Company_modelCreate').on('keypress', 'input', handleEnterKey);
 
 // Submit button click event
-$('#btnSave').click(async function () {
-
+$('#btnSave').click(async function (e) {
+    e.preventDefault;
     // Check if the form is valid
-    if ($('#CompanyForm').valid()) {
+    if ($('#GasHub_Company_Form').valid()) {
         // Proceed with form submission
-        var formData = $('#CompanyForm').serialize();
+        var formData = $('#GasHub_Company_Form').serialize();
         try {
             const response = await $.ajax({
                 url: '/Company/Create',
@@ -222,11 +223,14 @@ $('#btnSave').click(async function () {
 
             if (response.success === true && response.status === 200) {
                 // Show success message
-                $('#successMessage').text('Your company was successfully saved.');
-                $('#successMessage').show();
+                notification({ message: "Your company was successfully saved", type: "success", title: "Success" });
                 await GetCompanyList();
-                $('#CompanyForm')[0].reset();
-                $('#modelCreate').modal('hide');
+                $('#GasHub_Company_Form')[0].reset();
+                $('#GasHub_Company_modelCreate').modal('hide');
+            } else {
+                notificationErrors({ message: response.errorMessage });
+                $('#GasHub_Company_Form')[0].reset();
+                $('#GasHub_Company_modelCreate').modal('hide');
             }
         } catch (error) {
             console.log('Error:', error);
@@ -261,7 +265,7 @@ window.editCompany = async function (id) {
         debugger
         resetValidation()
         // Show modal for editing
-        $('#modelCreate').modal('show');
+        $('#GasHub_Company_modelCreate').modal('show');
         // Update button click event handler
         $('#btnUpdate').off('click').on('click', function () {
             updateCompany(id);
@@ -273,8 +277,8 @@ window.editCompany = async function (id) {
 
 
 async function updateCompany(id) {
-    if ($('#CompanyForm').valid()) {
-        const formData = $('#CompanyForm').serialize();
+    if ($('#GasHub_Company_Form').valid()) {
+        const formData = $('#GasHub_Company_Form').serialize();
         console.log(formData);
         try {
             const response = await $.ajax({
@@ -287,26 +291,26 @@ async function updateCompany(id) {
 
             if (response.success === true && response.status === 200) {
                 // Show success message
-                $('#successMessage').text('Your company was successfully updated.');
-                $('#successMessage').show();
+                notification({ message: "Your company was successfully updated.", type: "success", title: "Success" });
                 // Reset the form
-                $('#CompanyForm')[0].reset();
+                $('#GasHub_Company_Form')[0].reset();
                 // Update the company list
                 await GetCompanyList();
-                $('#modelCreate').modal('hide');
+                $('#GasHub_Company_modelCreate').modal('hide');
+            } else {
+                notificationErrors({ message: response.errorMessage });
+                $('#GasHub_Company_modelCreate').modal('hide');
             }
         } catch (error) {
-            console.log('Error:', error);
-            // Show error message
-            $('#errorMessage').text('An error occurred while updating the company.');
-            $('#errorMessage').show();
+            notificationErrors({ message: 'An error occurred while updating the company.' });
+            $('#GasHub_Company_modelCreate').modal('hide');
         }
     }
 }
 
 // Details Company
 //async function showDetails(id) {
-//    $('#deleteAndDetailsModel').modal('show');
+//    $('#GasHub_Company_deleteAndDetailsModel').modal('show');
 //    // Fetch company details and populate modal
 //    try {
 //        const response = await $.ajax({
@@ -324,7 +328,7 @@ async function updateCompany(id) {
 //}
 
 window.deleteCompany = function (id) {
-    $('#deleteAndDetailsModel').modal('show');
+    $('#GasHub_Company_deleteAndDetailsModel').modal('show');
 
     $('#companyDetails').empty();
     $('#btnDelete').click(function () {
@@ -333,13 +337,13 @@ window.deleteCompany = function (id) {
             type: 'POST',
             data: { id: id },
             success: function (response) {
-                $('#deleteAndDetailsModel').modal('hide');
+                $('#GasHub_Company_deleteAndDetailsModel').modal('hide');
                 notification({ message: "Company was successfully deleted.", type: "success", title: "Success" });
                 GetCompanyList();
             },
             error: function (xhr, status, error) {
-                console.log(error);
-                $('#deleteAndDetailsModel').modal('hide');
+                notificationErrors({ message: error.message });
+                $('#GasHub_Company_deleteAndDetailsModel').modal('hide');
             }
         });
     });

@@ -5,22 +5,6 @@
     Layout = "~/Views/Shared/_AdminLayoutPage.cshtml";
 }
 
-
-<section class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1>Order</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li class="breadcrumb-item active">Order</li>
-                </ol>
-            </div>
-        </div>
-    </div><!-- /.container-fluid -->
-</section>
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -38,8 +22,8 @@
                     <!-- /.card-header -->
 
                     <div class="card-body">
-                        <table id="CompanyTable" class="table table-bordered table-striped">
-                            <p> <a id="btn-Create" class="btn btn-success"> <i class="fa fa-plus"></i> Create New Order</a> </p>
+                        <table id="GasHub_Order_Table" class="table table-bordered table-striped">
+                            <p> <a id="GasHub_Order_btn-Create" class="btn btn-success"> <i class="fa fa-plus"></i> Create New Order</a> </p>
                             <thead>
                                 <tr>
                                     <th>Customer Name</th>
@@ -67,7 +51,7 @@
 
 
 
-<div class="modal  fade " id="modelCreate" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAddEmployee" aria-hidden="true">
+<div class="modal  fade " id="GasHub_Order_modelCreate" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAddEmployee" aria-hidden="true">
     <div class="modal-dialog modal-xl ">
         <div class="modal-content w-auto">
             <div class="modal-header">
@@ -76,7 +60,14 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <form id="CompanyForm">
+                <form id="GasHub_Order_Form">
+                    <input type="hidden" id="IsConfirmed" name="IsConfirmed" />
+                    <input type="hidden" id="IsPlaced" name="IsPlaced" />
+                    <input type="hidden" id="IsReadyToDispatch" name="IsReadyToDispatch" />
+                    <input type="hidden" id="IsDispatched" name="IsDispatched" />
+                    <input type="hidden" id="IsDelivered" name="IsDelivered" />
+                    <input type="hidden" id="IsCancel" name="IsCancel" />
+                    <input type="hidden" id="IsHold" name="IsHold" />
                     <div class="card-body">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="row">
@@ -84,32 +75,47 @@
                                 <div class="row">
                                      <div class="col-md-6">
                                         <div class="form-group">
-                                            <label asp-for="UserId"></label>
+                                            <label asp-for="UserId">
+                                                User Name
+                                                <span class="text-danger font-weight-bold">*</span>
+                                            </label>
                                             <select class="form-control" asp-for="UserId" id="userDropdown">
                                                 <option value="">Select User</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                            <label asp-for="ProductId"></label>
+                                            <label asp-for="ProductId">
+                                                Product Name
+                                                <span class="text-danger font-weight-bold">*</span>
+                                            </label>
                                             <select class="form-control" asp-for="ProductId" id="productDropdown">
                                                 <option value="">Select Product</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                            <label asp-for="TransactionNumber" class="control-label"></label>
+                                            <label asp-for="TransactionNumber" class="control-label">
+                                                Transaction Number
+                                                <span class="text-danger font-weight-bold">*</span>
+                                            </label>
                                             <input asp-for="TransactionNumber" placeholder="Enter Your Name" class="form-control" name="TransactionNumber" />
                                             <span asp-validation-for="TransactionNumber" class="text-danger"></span>
                                         </div>
                                     </div>
                                     <div class="col-md-6">
                                         <div class="form-group">
-                                            <label asp-for="ReturnProductId"></label>
+                                            <label asp-for="ReturnProductId">
+                                                Return Product
+                                                <span class="text-danger font-weight-bold">*</span>
+                                            </label>
                                             <select class="form-control" asp-for="ReturnProductId" id="ReturnProductDropdown">
                                                 <option value="">Select Return Product</option>
                                             </select>
                                         </div>
                                         <div class="form-group">
-                                            <label asp-for="Comments" class="control-label"></label>
+                                            <label asp-for="Comments" class="control-label">
+                                                Quentity
+                                                <span class="text-danger font-weight-bold">*</span>
+                                            </label>
                                             <input asp-for="Comments" placeholder="Enter Your Name" class="form-control" name="Comments" />
                                             <span asp-validation-for="Comments" class="text-danger"></span>
                                         </div>
@@ -149,7 +155,7 @@
 
 
 <!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteAndDetailsModel" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+<div class="modal fade" id="GasHub_Order_deleteAndDetailsModel" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">

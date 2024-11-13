@@ -5,22 +5,6 @@
     Layout = "~/Views/Shared/_AdminLayoutPage.cshtml";
 }
 
-<section class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1>Role</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li class="breadcrumb-item active">Role</li>
-                </ol>
-            </div>
-        </div>
-    </div><!-- /.container-fluid -->
-</section>
-
 <section class="content">
     <div class="container-fluid">
         <div class="row">
@@ -38,8 +22,8 @@
                     <!-- /.card-header -->
 
                     <div class="card-body">
-                        <table id="CompanyTable" class="table table-bordered table-striped">
-                            <p> <a id="btn-Create" class="btn btn-success"> <i class="fa fa-plus"></i> Create New Role</a> </p>
+                        <table id="GasHub_RoleTable" class="table table-bordered table-striped">
+                            <p> <a id="GasHub_Role_btn-Create" class="btn btn-success"> <i class="fa fa-plus"></i> Create New Role</a> </p>
                             <thead>
                                 <tr>
                                     <th>Role Name</th>
@@ -63,7 +47,7 @@
 
 
 
-<div class="modal  fade " id="modelCreate" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAddEmployee" aria-hidden="true">
+<div class="modal  fade " id="GasHub_Role_modelCreate" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAddEmployee" aria-hidden="true">
     <div class="modal-dialog modal-xl ">
         <div class="modal-content w-auto">
             <div class="modal-header">
@@ -72,14 +56,14 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <form id="CompanyForm">
+                <form id="GasHub_Role_Form">
                     <div class="card-body">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-6">
-                                        <div class="form-group">
+                                        @* <div class="form-group">
                                             <label asp-for="RoleName"></label>
                                             <select class="form-control" asp-for="RoleName" id="RoleName">
                                                 <option value="">Select Role</option>
@@ -88,6 +72,11 @@
                                                     <option value="@role">@role</option>
                                                 }
                                             </select>
+                                        </div> *@
+                                        <div class="form-group">
+                                            <label asp-for="RoleName" class="control-label"></label>
+                                            <input asp-for="RoleName" placeholder="Enter your Last Name" class="form-control" name="RoleName" />
+                                            <span asp-validation-for="RoleName" class="text-danger"></span>
                                         </div>
                                         
                                     </div>
@@ -128,7 +117,7 @@
 
 
 <!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteAndDetailsModel" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+<div class="modal fade" id="GasHub_Role_deleteAndDetailsModel" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">

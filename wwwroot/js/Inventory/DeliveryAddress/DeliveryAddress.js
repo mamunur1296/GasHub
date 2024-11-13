@@ -1,4 +1,6 @@
-﻿$(document).ready(async function () {
+﻿import { notification, notificationErrors } from "../../Utility/notification.js";
+
+$(document).ready(async function () {
     await GetDeliveryAddressList();
 });
 
@@ -27,9 +29,9 @@ async function GetDeliveryAddressList() {
 function onSuccess(deliveryAddress, users) {
     debugger
     if (deliveryAddress) {
-        if ($.fn.DataTable.isDataTable('#CompanyTable')) {
+        if ($.fn.DataTable.isDataTable('#GasHub_Address_Table')) {
             // If initialized, destroy the DataTable first
-            $('#CompanyTable').DataTable().destroy();
+            $('#GasHub_Address_Table').DataTable().destroy();
         }
 
         // Convert users array to a map for easy lookup
@@ -55,7 +57,7 @@ function onSuccess(deliveryAddress, users) {
             return null; // Skip if user not found
         }).filter(Boolean); // Remove null entries
         console.log('onSuccess:', mergedData);
-        $('#CompanyTable').dataTable({
+        $('#GasHub_Address_Table').dataTable({
             processing: true,
             lengthChange: true,
             lengthMenu: [[5, 10, 20, 30, -1], [5, 10, 20, 30, 'All']],
@@ -103,9 +105,9 @@ function onSuccess(deliveryAddress, users) {
                 {
                     data: null,
                     render: function (data, type, row, meta) {
-                        return '<button class="btn btn-primary btn-sm ms-1" onclick="editCompany(\'' + row.id + '\')">Edit</button>' + ' ' +
+                        return '<button class="btn btn-primary btn-sm ms-1" onclick="editAddress(\'' + row.id + '\')">Edit</button>' + ' ' +
                             '<button class="btn btn-info btn-sm ms-1" onclick="showDetails(\'' + row.id + '\')">Details</button>' + ' ' +
-                            '<button class="btn btn-danger btn-sm ms-1" onclick="deleteCompany(\'' + row.id + '\')">Delete</button>';
+                            '<button class="btn btn-danger btn-sm ms-1" onclick="deleteAddress(\'' + row.id + '\')">Delete</button>';
                     }
                 }
             ]
@@ -120,7 +122,7 @@ function onSuccess(deliveryAddress, users) {
 
 
 // Initialize validation
-const companyForm = $('#CompanyForm').validate({
+const GasHub_Address_Form = $('#GasHub_Address_Form').validate({
     onkeyup: function (element) {
         $(element).valid();
     },
@@ -185,22 +187,23 @@ const companyForm = $('#CompanyForm').validate({
 });
 
 // Bind validation on change
-$('#CompanyForm input[type="text"]').on('change', function () {
-    companyForm.element($(this));
+$('#GasHub_Address_Form input[type="text"]').on('change', function () {
+    GasHub_Address_Form.element($(this));
 });
-$('#CompanyForm input[type="text"]').on('focus', function () {
-    companyForm.element($(this));
+$('#GasHub_Address_Form input[type="text"]').on('focus', function () {
+    GasHub_Address_Form.element($(this));
 });
 function resetValidation() {
-    companyForm.resetForm(); // Reset validation
+    GasHub_Address_Form.resetForm(); // Reset validation
     $('.form-group .invalid-feedback').remove(); // Remove error messages
-    $('#CompanyForm input').removeClass('is-invalid'); // Remove error styling
+    $('#GasHub_Address_Form input').removeClass('is-invalid'); // Remove error styling
 }
 
 
-$('#btn-Create').click(function () {
-    $('#modelCreate input[type="text"]').val('');
-    $('#modelCreate').modal('show');
+$('#GasHub_Address_btn-Create').click(function (e) {
+    e.preventDefault;
+    $('#GasHub_Address_modelCreate input[type="text"]').val('');
+    $('#GasHub_Address_modelCreate').modal('show');
     $('#btnSave').show();
     $('#btnUpdate').hide();
     populateUserDropdown();
@@ -222,21 +225,21 @@ function handleEnterKey(event) {
 
 
 // Open modal and focus on the first input field
-$('#modelCreate').on('shown.bs.modal', function () {
-    $('#CompanyForm input:first').focus();
+$('#GasHub_Address_modelCreate').on('shown.bs.modal', function () {
+    $('#GasHub_Address_Form input:first').focus();
 });
 
 // Listen for Enter key press on input fields
-$('#modelCreate').on('keypress', 'input', handleEnterKey);
+$('#GasHub_Address_modelCreate').on('keypress', 'input', handleEnterKey);
 
 //======================================================================
 // Submit button click event
-$('#btnSave').click(async function () {
-    console.log("Save");
+$('#btnSave').click(async function (e) {
+    e.preventDefault;
     // Check if the form is valid
-    if ($('#CompanyForm').valid()) {
+    if ($('#GasHub_Address_Form').valid()) {
         // Proceed with form submission
-        var formData = $('#CompanyForm').serialize();
+        var formData = $('#GasHub_Address_Form').serialize();
         console.log(formData);
         try {
             var response = await $.ajax({
@@ -248,11 +251,13 @@ $('#btnSave').click(async function () {
 
             if (response.success === true && response.status === 200) {
                 // Show success message
-                $('#successMessage').text('Your Delivery Address was successfully saved.');
-                $('#successMessage').show();
+                notification({ message: "Your Delivery Address was successfully saved.", type: "success", title: "Success" });
                 await GetDeliveryAddressList()
-                $('#CompanyForm')[0].reset();
-                $('#modelCreate').modal('hide');
+                $('#GasHub_Address_Form')[0].reset();
+                $('#GasHub_Address_modelCreate').modal('hide');
+            } else {
+                notificationErrors({ message: response.errorMessage });
+                $('#GasHub_Address_modelCreate').modal('hide');
             }
         } catch (error) {
             console.log('Error:', error);
@@ -292,9 +297,8 @@ $('#refreshButton').click(function () {
     populateUserDropdown();
 });
 
-// Edit Company
-window.editCompany = async function (id) {
-    console.log("Edit company with id:", id);
+// Edit Address
+window.editAddress = async function (id) {
     $('#myModalLabelUpdateEmployee').show();
     $('#myModalLabelAddEmployee').hide();
     await populateUserDropdown();
@@ -320,20 +324,20 @@ window.editCompany = async function (id) {
         debugger
         resetValidation()
         // Show modal for editing
-        $('#modelCreate').modal('show');
+        $('#GasHub_Address_modelCreate').modal('show');
         // Update button click event handler
         $('#btnUpdate').off('click').on('click', function () {
-            updateCompany(id);
+            updateAddress(id);
         });
     } catch (error) {
         console.log('Error:', error);
     }
 }
 
-async function updateCompany(id) {
+async function updateAddress(id) {
     debugger
-    if ($('#CompanyForm').valid()) {
-        const formData = $('#CompanyForm').serialize();
+    if ($('#GasHub_Address_Form').valid()) {
+        const formData = $('#GasHub_Address_Form').serialize();
         console.log(formData);
         try {
             var response = await $.ajax({
@@ -346,26 +350,25 @@ async function updateCompany(id) {
             
             if (response.success === true && response.status === 200) {
                 // Show success message
-                $('#successMessage').text('Your Delivery Address was successfully updated.');
-                $('#successMessage').show();
+                notification({ message: "Your Delivery Address was successfully updated.", type: "success", title: "Success" });
                 // Reset the form
-                $('#CompanyForm')[0].reset();
+                $('#GasHub_Address_Form')[0].reset();
                 // Update the company list
-                $('#modelCreate').modal('hide');
+                $('#GasHub_Address_modelCreate').modal('hide');
                 await GetDeliveryAddressList();
+            } else {
+                notificationErrors({ message: response.errorMessage });
+                $('#GasHub_Address_modelCreate').modal('hide');
             }
         } catch (error) {
-            console.log('Error:', error);
-            // Show error message
-            $('#errorMessage').text('An error occurred while updating the company.');
-            $('#errorMessage').show();
+            notificationErrors({ message: error.message });
         }
     }
 }
 
 // Details Company
 //async function showDetails(id) {
-//    $('#deleteAndDetailsModel').modal('show');
+//    $('#GasHub_Address_deleteAndDetailsModel').modal('show');
 //    // Fetch company details and populate modal
 //    try {
 //        const response = await $.ajax({
@@ -382,8 +385,8 @@ async function updateCompany(id) {
 //    }
 //}
 
-window.deleteCompany = function (id) {
-    $('#deleteAndDetailsModel').modal('show');
+window.deleteAddress = function (id) {
+    $('#GasHub_Address_deleteAndDetailsModel').modal('show');
 
     $('#companyDetails').empty();
     $('#btnDelete').click(async function () {
@@ -394,15 +397,17 @@ window.deleteCompany = function (id) {
                 data: { id: id }
             });
             if (response.success === true && response.status === 200) {
-                $('#deleteAndDetailsModel').modal('hide');
-                $('#successMessage').text('Your Delivery Address was successfully Delete.');
-                $('#successMessage').show();
+                $('#GasHub_Address_deleteAndDetailsModel').modal('hide');
+                notification({ message: "Your Delivery Address was successfully Delete.", type: "success", title: "Success" });
                 await GetDeliveryAddressList()
+            } else {
+                notificationErrors({ message: response.errorMessage });
+                $('#GasHub_Address_deleteAndDetailsModel').modal('hide');
             }
             
         } catch (error) {
-            console.log(error);
-            $('#deleteAndDetailsModel').modal('hide');
+            notificationErrors({ message: error.message });
+            $('#GasHub_Address_deleteAndDetailsModel').modal('hide');
         }
     });
 }

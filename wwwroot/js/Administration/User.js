@@ -25,9 +25,9 @@ async function GetUserList() {
 function onSuccess(users) {
     debugger
     if (users) {
-        if ($.fn.DataTable.isDataTable('#CompanyTable')) {
+        if ($.fn.DataTable.isDataTable('#GasHub_UserTable')) {
             // If initialized, destroy the DataTable first
-            $('#CompanyTable').DataTable().destroy();
+            $('#GasHub_UserTable').DataTable().destroy();
         }
 
         // Merge company and user data
@@ -47,7 +47,7 @@ function onSuccess(users) {
             return null; // Skip if user not found
         }).filter(Boolean); // Remove null entries
         console.log('onSuccess:', mergedData);
-        $('#CompanyTable').dataTable({
+        $('#GasHub_UserTable').dataTable({
             processing: true,
             lengthChange: true,
             lengthMenu: [[5, 10, 20, 30, -1], [5, 10, 20, 30, 'All']],
@@ -89,8 +89,8 @@ function onSuccess(users) {
                 {
                     data: null,
                     render: function (data, type, row, meta) {
-                        return '<button class="btn btn-primary btn-sm ms-1" onclick="editCompany(\'' + row.id + '\')">Edit</button>' + ' ' +
-                            '<button class="btn btn-info btn-sm ms-1" onclick="showDetails(\'' + row.id + '\')">Details</button>' + ' ' +
+                        return '<button class="btn btn-primary btn-sm ms-1" onclick="editCompany(\'' + row.id + '\')"disabled>Edit</button>' + ' ' +
+                            '<button class="btn btn-info btn-sm ms-1" onclick="showDetails(\'' + row.id + '\')"disabled>Details</button>' + ' ' +
                             '<button class="btn btn-danger btn-sm ms-1" onclick="deleteCompany(\'' + row.id + '\')">Delete</button>';
                     }
                 }
@@ -107,7 +107,7 @@ function onSuccess(users) {
 
 
 // Initialize validation
-const companyForm = $('#CompanyForm').validate({
+const GasHub_UserForm = $('#GasHub_UserForm').validate({
     onkeyup: function (element) {
         $(element).valid();
     },
@@ -194,22 +194,24 @@ $.validator.addMethod("pwcheck", function (value) {
     return /[a-z]/.test(value); // At least one lowercase letter
 });
 // Bind validation on change
-$('#CompanyForm input[type="text"]').on('change', function () {
-    companyForm.element($(this));
+$('#GasHub_UserForm input[type="text"]').on('change', function () {
+    GasHub_UserForm.element($(this));
 });
-$('#CompanyForm input[type="text"]').on('focus', function () {
-    companyForm.element($(this));
+$('#GasHub_UserForm input[type="text"]').on('focus', function () {
+    GasHub_UserForm.element($(this));
 });
 function resetValidation() {
-    companyForm.resetForm(); // Reset validation
+    GasHub_UserForm.resetForm(); // Reset validation
     $('.form-group .invalid-feedback').remove(); // Remove error messages
-    $('#CompanyForm input').removeClass('is-invalid'); // Remove error styling
+    $('#GasHub_UserForm input').removeClass('is-invalid'); // Remove error styling
 }
 
 
-$('#btn-Create').click(async function () {
-    $('#modelCreate input[type="text"]').val('');
-    $('#modelCreate').modal('show');
+$('#GasHub_btn-Create').off("click").click(async function (e) {
+    debugger
+    e.preventDefault;
+    $('#GasHub_modelCreate input[type="text"]').val('');
+    $('#GasHub_modelCreate').modal('show');
     $('#btnSave').show();
     $('#btnUpdate').hide();
     await populateRoleDropdown();
@@ -253,7 +255,7 @@ async function populateTraderDropdown() {
         // Clear existing options
         $('#TraderDropdown').empty();
         // Add default option
-        //$('#RolesDropdown').append('<option value="">Select role</option>');
+        $('#TraderDropdown').append('<option value="">Select Trader</option>');
         // Add user options
         console.log(data.data);
         $.each(data.data, function (index, role) {
@@ -281,20 +283,21 @@ function handleEnterKey(event) {
 
 
 // Open modal and focus on the first input field
-$('#modelCreate').on('shown.bs.modal', function () {
-    $('#CompanyForm input:first').focus();
+$('#GasHub_modelCreate').on('shown.bs.modal', function () {
+    $('#GasHub_UserForm input:first').focus();
 });
 
 // Listen for Enter key press on input fields
-$('#modelCreate').on('keypress', 'input', handleEnterKey);
+$('#GasHub_modelCreate').on('keypress', 'input', handleEnterKey);
 
 // Submit button click event
-$('#btnSave').click(async function () {
+$('#btnSave').off("click").click(async function (e) {
+    e.preventDefault;
     debugger
     // Check if the form is valid
-    if ($('#CompanyForm').valid()) {
+    if ($('#GasHub_UserForm').valid()) {
         // Proceed with form submission
-        var formData = $('#CompanyForm').serialize();
+        var formData = $('#GasHub_UserForm').serialize();
         try {
             const response = await $.ajax({
                 url: '/User/Create',
@@ -307,8 +310,8 @@ $('#btnSave').click(async function () {
             if (response.success && response.status === 200) {
                 // Show success message
                 await GetUserList();
-                $('#CompanyForm')[0].reset();
-                $('#modelCreate').modal('hide');
+                $('#GasHub_UserForm')[0].reset();
+                $('#GasHub_modelCreate').modal('hide');
                 notification({ message: "User Created successfully !", type: "success", title: "Success" });
             } else if (response.errorMessage) {
                 // Display specific error messages
@@ -330,21 +333,22 @@ $('#btnSave').click(async function () {
 
 window.deleteCompany = function (id) {
     
-    $('#deleteAndDetailsModel').modal('show');
+    $('#GasHub_deleteAndDetailsModel').modal('show');
     $('#companyDetails').empty();
-    $('#btnDelete').off('click').on('click', function () { // Unbind previous events first
+    $('#btnDelete').off('click').on('click', function (e) { // Unbind previous events first
+        e.preventDefault;
         $.ajax({
             url: '/User/Delete',
             type: 'POST',
             data: { id: id },
             success: function (response) {
-                $('#deleteAndDetailsModel').modal('hide');
+                $('#GasHub_deleteAndDetailsModel').modal('hide');
                 notification({ message: "User was successfully deleted.", type: "success", title: "Success" });
                 GetUserList();
             },
             error: function (xhr, status, error) {
                 console.log(error);
-                $('#deleteAndDetailsModel').modal('hide');
+                $('#GasHub_deleteAndDetailsModel').modal('hide');
             }
         });
     });

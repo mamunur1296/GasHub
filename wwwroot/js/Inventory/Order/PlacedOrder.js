@@ -1,4 +1,5 @@
-﻿$(document).ready(async function () {
+﻿import { notification, notificationErrors } from "../../Utility/notification.js";
+$(document).ready(async function () {
     await GetOrderList();
 });
 
@@ -92,7 +93,7 @@ function onSuccess(orders, usersData, productsData, returnProductsData) {
         }).filter(Boolean); // Remove null entries
 
         console.log('onSuccess:', mergedData);
-        $('#CompanyTable').dataTable({
+        $('#GasHub_Place_Order_Table').dataTable({
             destroy: true,
             processing: true,
             lengthChange: true,
@@ -135,7 +136,7 @@ function onSuccess(orders, usersData, productsData, returnProductsData) {
                 {
                     data: 'id',
                     render: function (data) {
-                        return '<button class="btn btn-primary btn-sm ms-1" onclick="editCompany(\'' + data + '\')">Edit</button>' + ' ' +
+                        return '<button class="btn btn-primary btn-sm ms-1" onclick="editPlaseOrder(\'' + data + '\')">Edit</button>' + ' ' +
                             '<button class="btn btn-info btn-sm ms-1" onclick="showDetails(\'' + data + '\')">Details</button>' + ' ' +
                             '<button class="btn btn-primary btn-sm ms-1" onclick="OrderConfirmed(\'' + data + '\')">Confirmed</button>';
                     }
@@ -197,9 +198,10 @@ function resetValidation() {
 }
 
 
-$('#btn-Create').click(function () {
-    $('#modelCreate input[type="text"]').val('');
-    $('#modelCreate').modal('show');
+$('#btn-Create').off("click").click(function (e) {
+    e.preventDefault;
+    $('#GasHub_Place_Order_modelCreate input[type="text"]').val('');
+    $('#GasHub_Place_Order_modelCreate').modal('show');
     $('#btnSave').show();
     $('#btnUpdate').hide();
     populateUserDropdown();
@@ -223,17 +225,17 @@ function handleEnterKey(event) {
 
 
 // Open modal and focus on the first input field
-$('#modelCreate').on('shown.bs.modal', function () {
+$('#GasHub_Place_Order_modelCreate').on('shown.bs.modal', function () {
     $('#CompanyForm input:first').focus();
 });
 
 // Listen for Enter key press on input fields
-$('#modelCreate').on('keypress', 'input', handleEnterKey);
+$('#GasHub_Place_Order_modelCreate').on('keypress', 'input', handleEnterKey);
 
 //======================================================================
 // Submit button click event
-$('#btnSave').click(async function () {
-    console.log("Save");
+$('#btnSave').off("click").click(async function (e) {
+    e.preventDefault;
     debugger
     // Check if the form is valid
     if ($('#PlasedOrderForm').valid()) {
@@ -251,14 +253,17 @@ $('#btnSave').click(async function () {
             
             if (response.success === true && response.status === 200) {
                 // Show success message
-                $('#successMessage').text('Your Order was successfully saved.');
-                $('#successMessage').show();
+                notification({ message: "Your Order was successfully saved.", type: "success", title: "Success" });
                 await GetOrderList();
                 $('#CompanyForm')[0].reset();
-                $('#modelCreate').modal('hide');
+                $('#GasHub_Place_Order_modelCreate').modal('hide');
+            } else {
+                notificationErrors({ message: response.errorMessage + response.title });
+                $('#GasHub_Place_Order_modelCreate').modal('hide');
             }
         } catch (error) {
-            console.log('Error:', error);
+            notificationErrors({ message: error.message });
+            $('#GasHub_Place_Order_modelCreate').modal('hide');
         }
     }
 });
@@ -346,7 +351,7 @@ $('#refreshButton').click(function () {
 });
 
 // Edit Company
-window.editCompany = async function (id) {
+window.editPlaseOrder = async function (id) {
     console.log("Edit company with id:", id);
     $('#myModalLabelUpdateEmployee').show();
     $('#myModalLabelAddEmployee').hide();
@@ -372,15 +377,22 @@ window.editCompany = async function (id) {
         $('#ReturnProductDropdown').val(data.returnProductId);
         $('#Comments').val(data.comments);
         $('#TransactionNumber').val(data.transactionNumber);
-
+        $('#IsDelivered').val(data.isDelivered);
+        $('#IsPlaced').val(data.isPlaced);
+        $('#IsHold').val(data.isHold);
+        $('#IsConfirmed').val(data.isConfirmed);
+        $('#IsReadyToDispatch').val(data.isReadyToDispatch);
+        $('#IsDispatched').val(data.isDispatched);
+        $('#IsCancel').val(data.isCancel);
 
         debugger
         resetValidation()
         // Show modal for editing
-        $('#modelCreate').modal('show');
+        $('#GasHub_Place_Order_modelCreate').modal('show');
         // Update button click event handler
-        $('#btnUpdate').off('click').on('click', function () {
-            updateCompany(id);
+        $('#btnUpdate').off('click').on('click', function (e) {
+            e.preventDefault;
+            updatePlaseOrder(id);
         });
     } catch (error) {
         console.log('Error:', error);
@@ -442,28 +454,29 @@ window.OrderConfirmed = async function (id) {
 
                 if (response.success === true && response.status === 200) {
                     // Show success message
-                    $('#successMessage').text('Your Order was successfully updated.');
-                    $('#successMessage').show();
+                    notification({ message: "Your Order was successfully updated.", type: "success", title: "Success" });
                     // Reset the form
                     $('#PlasedOrderForm')[0].reset();
                     // Update the company list
                     await GetOrderList();
-                    $('#modelCreate').modal('hide');
+                    $('#GasHub_Place_Order_modelCreate').modal('hide');
+                } else {
+                    notificationErrors({ message: response.errorMessage + response.title });
+                    $('#GasHub_Place_Order_modelCreate').modal('hide');
                 }
             } catch (error) {
-                console.log('Error:', error);
-                // Show error message
-                $('#errorMessage').text('An error occurred while updating the company.');
-                $('#errorMessage').show();
+                notificationErrors({ message: error.message });
+                $('#GasHub_Place_Order_modelCreate').modal('hide');
             }
         }
         
     } catch (error) {
-        console.log('Error:', error);
+        notificationErrors({ message: error.message });
+        $('#GasHub_Place_Order_modelCreate').modal('hide');
     }
 }
 
-async function updateCompany(id) {
+async function updatePlaseOrder(id) {
     if ($('#PlasedOrderForm').valid()) {
         const formData = $('#PlasedOrderForm').serialize();
         debugger
@@ -479,19 +492,19 @@ async function updateCompany(id) {
 
             if (response.success === true && response.status === 200) {
                 // Show success message
-                $('#successMessage').text('Your Order was successfully updated.');
-                $('#successMessage').show();
+                notification({ message: "Your Order was successfully updated.", type: "success", title: "Success" });
                 // Reset the form
                 $('#PlasedOrderForm')[0].reset();
                 // Update the company list
                 await GetOrderList();
-                $('#modelCreate').modal('hide');
+                $('#GasHub_Place_Order_modelCreate').modal('hide');
+            } else {
+                notificationErrors({ message: response.errorMessage + response.title });
+                $('#GasHub_Place_Order_modelCreate').modal('hide');
             }
         } catch (error) {
-            console.log('Error:', error);
-            // Show error message
-            $('#errorMessage').text('An error occurred while updating the company.');
-            $('#errorMessage').show();
+            notificationErrors({ message: error.message});
+            $('#GasHub_Place_Order_modelCreate').modal('hide');
         }
     }
 }

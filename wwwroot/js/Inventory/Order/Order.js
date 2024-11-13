@@ -1,4 +1,6 @@
-﻿$(document).ready(async function () {
+﻿import { notification, notificationErrors } from "../../Utility/notification.js";
+
+$(document).ready(async function () {
     await GetOrderList();
 });
 
@@ -92,7 +94,7 @@ function onSuccess(orders, usersData, productsData, returnProductsData) {
         }).filter(Boolean); // Remove null entries
 
         console.log('onSuccess:', mergedData);
-        $('#CompanyTable').dataTable({
+        $('#GasHub_Order_Table').dataTable({
             destroy: true,
             processing: true,
             lengthChange: true,
@@ -135,9 +137,9 @@ function onSuccess(orders, usersData, productsData, returnProductsData) {
                 {
                     data: 'id',
                     render: function (data) {
-                        return '<button class="btn btn-primary btn-sm ms-1" onclick="editCompany(\'' + data + '\')">Edit</button>' + ' ' +
+                        return '<button class="btn btn-primary btn-sm ms-1" onclick="editOrder(\'' + data + '\')">Edit</button>' + ' ' +
                             '<button class="btn btn-info btn-sm ms-1" onclick="showDetails(\'' + data + '\')">Details</button>' + ' ' +
-                            '<button class="btn btn-danger btn-sm ms-1" onclick="deleteCompany(\'' + data + '\')">Delete</button>';
+                            '<button class="btn btn-danger btn-sm ms-1" onclick="deleteOrder(\'' + data + '\')">Delete</button>';
                     }
                 }
             ]
@@ -153,7 +155,7 @@ function onSuccess(orders, usersData, productsData, returnProductsData) {
 
 
 // Initialize validation
-const companyForm = $('#CompanyForm').validate({
+const GasHub_Order_Form = $('#GasHub_Order_Form').validate({
     onkeyup: function (element) {
         $(element).valid();
     },
@@ -188,18 +190,19 @@ const companyForm = $('#CompanyForm').validate({
 
 // Bind validation on change
 $('#userDropdown, #productDropdown, #ReturnProductDropdown').on('change focus', function () {
-    companyForm.element($(this));
+    GasHub_Order_Form.element($(this));
 });
 function resetValidation() {
-    companyForm.resetForm(); // Reset validation
+    GasHub_Order_Form.resetForm(); // Reset validation
     $('.form-group .invalid-feedback').remove(); // Remove error messages
-    $('#CompanyForm input').removeClass('is-invalid'); // Remove error styling
+    $('#GasHub_Order_Form input').removeClass('is-invalid'); // Remove error styling
 }
 
 
-$('#btn-Create').click(function () {
-    $('#modelCreate input[type="text"]').val('');
-    $('#modelCreate').modal('show');
+$('#GasHub_Order_btn-Create').off("click").click(function (e) {
+    e.preventDefault;
+    $('#GasHub_Order_modelCreate input[type="text"]').val('');
+    $('#GasHub_Order_modelCreate').modal('show');
     $('#btnSave').show();
     $('#btnUpdate').hide();
     populateUserDropdown();
@@ -223,22 +226,23 @@ function handleEnterKey(event) {
 
 
 // Open modal and focus on the first input field
-$('#modelCreate').on('shown.bs.modal', function () {
-    $('#CompanyForm input:first').focus();
+$('#GasHub_Order_modelCreate').on('shown.bs.modal', function () {
+    $('#GasHub_Order_Form input:first').focus();
 });
 
 // Listen for Enter key press on input fields
-$('#modelCreate').on('keypress', 'input', handleEnterKey);
+$('#GasHub_Order_modelCreate').on('keypress', 'input', handleEnterKey);
 
 //======================================================================
 // Submit button click event
-$('#btnSave').click(async function () {
+$('#btnSave').off("click").click(async function (e) {
+    e.preventDefault;
     console.log("Save");
     debugger
     // Check if the form is valid
-    if ($('#CompanyForm').valid()) {
+    if ($('#GasHub_Order_Form').valid()) {
         // Proceed with form submission
-        var formData = $('#CompanyForm').serialize();
+        var formData = $('#GasHub_Order_Form').serialize();
         console.log(formData);
         try {
             var response = await $.ajax({
@@ -251,14 +255,17 @@ $('#btnSave').click(async function () {
             
             if (response.success === true && response.status === 200) {
                 // Show success message
-                $('#successMessage').text('Your Order was successfully saved.');
-                $('#successMessage').show();
+                notification({ message: "Your Order was successfully saved.", type: "success", title: "Success" });
                 await GetOrderList();
-                $('#CompanyForm')[0].reset();
-                $('#modelCreate').modal('hide');
+                $('#GasHub_Order_Form')[0].reset();
+                $('#GasHub_Order_modelCreate').modal('hide');
+            } else {
+                notificationErrors({ message: response.errorMessage });
+                $('#GasHub_Order_modelCreate').modal('hide');
             }
         } catch (error) {
-            console.log('Error:', error);
+            notificationErrors({ message: error.message });
+            $('#GasHub_Order_modelCreate').modal('hide');
         }
     }
 });
@@ -345,9 +352,8 @@ $('#refreshButton').click(function () {
     populateUserDropdown();
 });
 
-// Edit Company
-window.editCompany = async function (id) {
-    console.log("Edit company with id:", id);
+// Edit Order
+window.editOrder = async function (id) {
     $('#myModalLabelUpdateEmployee').show();
     $('#myModalLabelAddEmployee').hide();
     await populateUserDropdown();
@@ -370,26 +376,35 @@ window.editCompany = async function (id) {
         $('#userDropdown').val(data.userId);
         $('#productDropdown').val(data.productId);
         $('#ReturnProductDropdown').val(data.returnProductId);
-        $('#Comments').val(data.comments);
         $('#TransactionNumber').val(data.transactionNumber);
+        $('#Comments').val(data.comments);
+        $('#IsDelivered').val(data.isDelivered);
+        $('#IsPlaced').val(data.isPlaced);
+        $('#IsHold').val(data.isHold);
+        $('#IsConfirmed').val(data.isConfirmed);
+        $('#IsReadyToDispatch').val(data.isReadyToDispatch);
+        $('#IsDispatched').val(data.isDispatched);
+        $('#IsCancel').val(data.isCancel);
 
 
         debugger
         resetValidation()
         // Show modal for editing
-        $('#modelCreate').modal('show');
+        $('#GasHub_Order_modelCreate').modal('show');
         // Update button click event handler
-        $('#btnUpdate').off('click').on('click', function () {
-            updateCompany(id);
+        $('#btnUpdate').off('click').on('click', function (e) {
+            e.preventDefault;
+            updateOrder(id);
         });
     } catch (error) {
         console.log('Error:', error);
     }
 }
 
-async function updateCompany(id) {
-    if ($('#CompanyForm').valid()) {
-        const formData = $('#CompanyForm').serialize();
+async function updateOrder(id) {
+    debugger
+    if ($('#GasHub_Order_Form').valid()) {
+        const formData = $('#GasHub_Order_Form').serialize();
         console.log(formData);
         try {
             var response = await $.ajax({
@@ -399,29 +414,29 @@ async function updateCompany(id) {
                 data: formData
             });
 
-            
+            debugger
             if (response.success === true && response.status === 200) {
                 // Show success message
-                $('#successMessage').text('Your Order was successfully updated.');
-                $('#successMessage').show();
+                notification({ message: "Your Order was successfully updated.", type: "success", title: "Success" });
                 // Reset the form
-                $('#CompanyForm')[0].reset();
+                $('#GasHub_Order_Form')[0].reset();
                 // Update the company list
                 await GetOrderList();
-                $('#modelCreate').modal('hide');
+                $('#GasHub_Order_modelCreate').modal('hide');
+            } else {
+                notificationErrors({ message: response.errorMessage + response.title });
+                $('#GasHub_Order_modelCreate').modal('hide');
             }
         } catch (error) {
-            console.log('Error:', error);
-            // Show error message
-            $('#errorMessage').text('An error occurred while updating the company.');
-            $('#errorMessage').show();
+            notificationErrors({ message: error.message });
+            $('#GasHub_Order_modelCreate').modal('hide');
         }
     }
 }
 
 // Details Company
 //async function showDetails(id) {
-//    $('#deleteAndDetailsModel').modal('show');
+//    $('#GasHub_Order_deleteAndDetailsModel').modal('show');
 //    // Fetch company details and populate modal
 //    try {
 //        const response = await $.ajax({
@@ -438,12 +453,13 @@ async function updateCompany(id) {
 //    }
 //}
 
-window.deleteCompany = function (id) {
+window.deleteOrder = function (id) {
     debugger
-    $('#deleteAndDetailsModel').modal('show');
+    $('#GasHub_Order_deleteAndDetailsModel').modal('show');
 
     $('#companyDetails').empty();
-    $('#btnDelete').click(async function () {
+    $('#btnDelete').off("click").click(async function (e) {
+        e.preventDefault;
         try {
             const response = await $.ajax({
                 url: '/Order/Delete',
@@ -452,14 +468,16 @@ window.deleteCompany = function (id) {
             });
             if (response.success === true && response.status === 200) {
 
-            $('#deleteAndDetailsModel').modal('hide');
-            $('#successMessage').text('Your Order was successfully Delete...');
-            $('#successMessage').show();
-            await GetOrderList();
+                $('#GasHub_Order_deleteAndDetailsModel').modal('hide');
+                notification({ message: "Your Order was successfully Delete...", type: "success", title: "Success" });
+                await GetOrderList();
+            } else {
+                notificationErrors({ message: response.errorMessage });
+                $('#GasHub_Order_deleteAndDetailsModel').modal('hide');
             }
         } catch (error) {
-            console.log(error);
-            $('#deleteAndDetailsModel').modal('hide');
+            notificationErrors({ message: error.message });
+            $('#GasHub_Order_deleteAndDetailsModel').modal('hide');
         }
     });
 }

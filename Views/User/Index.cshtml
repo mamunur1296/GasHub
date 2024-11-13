@@ -5,23 +5,6 @@
     Layout = "~/Views/Shared/_AdminLayoutPage.cshtml";
 }
 
-<section class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1>User</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li class="breadcrumb-item active">User</li>
-                </ol>
-            </div>
-        </div>
-    </div><!-- /.container-fluid -->
-</section>
-
-
 
 <section class="content">
     <div class="container-fluid">
@@ -44,8 +27,8 @@
                     <!-- /.card-header -->
 
                     <div class="card-body">
-                        <table id="CompanyTable" class="table table-bordered table-striped">
-                            <p> <a id="btn-Create" class="btn btn-success"> <i class="fa fa-plus"></i> Add New User</a> </p>
+                        <table id="GasHub_UserTable" class="table table-bordered table-striped">
+                            <p> <a id="GasHub_btn-Create" class="btn btn-success"> <i class="fa fa-plus"></i> Add New User</a> </p>
                             <thead>
                                 <tr>
                                     <th>Image</th>
@@ -73,7 +56,7 @@
 
 
 
-<div class="modal fade" id="modelCreate" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAddEmployee" aria-hidden="true">
+<div class="modal fade" id="GasHub_modelCreate" tabindex="-1" role="dialog" aria-labelledby="myModalLabelAddEmployee" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content w-auto">
             <div class="modal-header">
@@ -82,7 +65,7 @@
                 <button type="button" class="close" data-dismiss="modal">&times;</button>
             </div>
             <div class="modal-body">
-                <form id="CompanyForm">
+                <form id="GasHub_UserForm">
                     <div class="card-body">
                         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                         <div class="row">
@@ -116,7 +99,7 @@
                                             </div>
                                         </div>
                                         <div class="form-group">
-                                            <label asp-for="TraderId"></label>
+                                            <label asp-for="TraderId">Trader</label>
                                             <select class="form-control" asp-for="TraderId" id="TraderDropdown">
                                                 <option value="">Select Trader</option>
                                             </select>
@@ -130,12 +113,12 @@
                                         </div>
                                         <div class="form-group">
                                             <label asp-for="Password" class="control-label"></label>
-                                            <input asp-for="Password" placeholder="Enter Password" class="form-control" name="Password" />
+                                            <input type="password" asp-for="Password" placeholder="Enter Password" class="form-control" name="Password" />
                                             <span asp-validation-for="Password" class="text-danger"></span>
                                         </div>
                                         <div class="form-group">
                                             <label asp-for="ConfirmationPassword" class="control-label"></label>
-                                            <input asp-for="ConfirmationPassword" placeholder="Confirm your Password" class="form-control" name="ConfirmationPassword" />
+                                            <input type="password" asp-for="ConfirmationPassword" placeholder="Confirm your Password" class="form-control" name="ConfirmationPassword" />
                                             <span asp-validation-for="ConfirmationPassword" class="text-danger"></span>
                                         </div>
                                         <div class="form-group">
@@ -174,7 +157,7 @@
 
 
 <!-- Delete Confirmation Modal -->
-<div class="modal fade" id="deleteAndDetailsModel" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
+<div class="modal fade" id="GasHub_deleteAndDetailsModel" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">

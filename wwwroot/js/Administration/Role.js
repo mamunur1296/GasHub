@@ -1,4 +1,4 @@
-﻿import { notification } from "../Utility/notification.js";
+﻿import { notification, notificationErrors } from "../Utility/notification.js";
 
 $(document).ready(async function () {
     await GetRoleList();
@@ -40,7 +40,7 @@ function onSuccess(roles) {
             return null; // Skip if any data not found
         }).filter(Boolean); // Remove null entries
 
-        $('#CompanyTable').dataTable({
+        $('#GasHub_RoleTable').dataTable({
             destroy: true,
             processing: true,
             lengthChange: true,
@@ -59,7 +59,7 @@ function onSuccess(roles) {
                 {
                     data: 'id',
                     render: function (data) {
-                        return '<button class="btn btn-danger btn-sm ms-1" onclick="deleteCompany(\'' + data + '\')">Delete</button>';
+                        return '<button class="btn btn-danger btn-sm ms-1" onclick="deleteRole(\'' + data + '\')">Delete</button>';
                             
                     }
                 }
@@ -76,7 +76,7 @@ function onSuccess(roles) {
 
 
 // Initialize validation
-const companyForm = $('#CompanyForm').validate({
+const GasHub_Role_Form = $('#GasHub_Role_Form').validate({
     onkeyup: function (element) {
         $(element).valid();
     },
@@ -105,18 +105,19 @@ const companyForm = $('#CompanyForm').validate({
 
 // Bind validation on change
 $('#userDropdown, #productDropdown, #ReturnProductDropdown').on('change focus', function () {
-    companyForm.element($(this));
+    GasHub_Role_Form.element($(this));
 });
 function resetValidation() {
-    companyForm.resetForm(); // Reset validation
+    GasHub_Role_Form.resetForm(); // Reset validation
     $('.form-group .invalid-feedback').remove(); // Remove error messages
-    $('#CompanyForm input').removeClass('is-invalid'); // Remove error styling
+    $('#GasHub_Role_Form input').removeClass('is-invalid'); // Remove error styling
 }
 
 
-$('#btn-Create').click(function () {
-    $('#modelCreate input[type="text"]').val('');
-    $('#modelCreate').modal('show');
+$('#GasHub_Role_btn-Create').off("click").click(function (e) {
+    e.preventDefault;
+    $('#GasHub_Role_modelCreate input[type="text"]').val('');
+    $('#GasHub_Role_modelCreate').modal('show');
     $('#btnSave').show();
     $('#btnUpdate').hide();
 });
@@ -137,22 +138,22 @@ function handleEnterKey(event) {
 
 
 // Open modal and focus on the first input field
-$('#modelCreate').on('shown.bs.modal', function () {
-    $('#CompanyForm input:first').focus();
+$('#GasHub_Role_modelCreate').on('shown.bs.modal', function () {
+    $('#GasHub_Role_Form input:first').focus();
 });
 
 // Listen for Enter key press on input fields
-$('#modelCreate').on('keypress', 'input', handleEnterKey);
+$('#GasHub_Role_modelCreate').on('keypress', 'input', handleEnterKey);
 
 //======================================================================
 // Submit button click event
-$('#btnSave').click(async function () {
-    console.log("Save");
+$('#btnSave').off("click").click(async function (e) {
+    e.preventDefault;
     debugger
     // Check if the form is valid
-    if ($('#CompanyForm').valid()) {
+    if ($('#GasHub_Role_Form').valid()) {
         // Proceed with form submission
-        var formData = $('#CompanyForm').serialize();
+        var formData = $('#GasHub_Role_Form').serialize();
         console.log(formData);
         try {
             var response = await $.ajax({
@@ -162,12 +163,15 @@ $('#btnSave').click(async function () {
                 data: formData
             });
 
-            if (response.success === true && response.status === 200 ) {
+            if (response.success === true && response.status === 200) {
                 // Show success message
                 notification({ message: "Role Created successfully !", type: "success", title: "Success" });
                 await GetRoleList();
-                $('#CompanyForm')[0].reset();
-                $('#modelCreate').modal('hide');
+                $('#GasHub_Role_Form')[0].reset();
+                $('#GasHub_Role_modelCreate').modal('hide');
+            } else {
+                notificationErrors({ message: response.errorMessage });
+                $('#GasHub_Role_modelCreate').modal('hide');
             }
         } catch (error) {
             console.log('Error:', error);
@@ -175,9 +179,9 @@ $('#btnSave').click(async function () {
     }
 });
 
-window.deleteCompany = function (id) {
+window.deleteRole = function (id) {
     debugger
-    $('#deleteAndDetailsModel').modal('show');
+    $('#GasHub_Role_deleteAndDetailsModel').modal('show');
 
     $('#companyDetails').empty();
     $('#btnDelete').click(async function () {
@@ -189,12 +193,12 @@ window.deleteCompany = function (id) {
             });
             if (response) {
                 notification({ message: "Role was successfully deleted.", type: "success", title: "Success" });
-                $('#deleteAndDetailsModel').modal('hide');
+                $('#GasHub_Role_deleteAndDetailsModel').modal('hide');
                 await GetRoleList();
             }
         } catch (error) {
             console.log(error);
-            $('#deleteAndDetailsModel').modal('hide');
+            $('#GasHub_Role_deleteAndDetailsModel').modal('hide');
         }
     });
 }
