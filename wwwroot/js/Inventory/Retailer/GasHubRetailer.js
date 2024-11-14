@@ -1,5 +1,6 @@
 ﻿$(document).ready(async function () {
     await GetRetailerList();
+    console.log("Retailer");
 });
 
 async function GetRetailerList() {
@@ -270,7 +271,7 @@ window.editCompany = async function (id) {
 }
 
 
-window.deleteCompany = function (id) {
+async function updateCompany(id) {
     if ($('#CompanyForm').valid()) {
         const formData = $('#CompanyForm').serialize();
         console.log(formData);
@@ -302,26 +303,9 @@ window.deleteCompany = function (id) {
     }
 }
 
-// Details Company
-//async function showDetails(id) {
-//    $('#deleteAndDetailsModel').modal('show');
-//    // Fetch company details and populate modal
-//    try {
-//        const response = await $.ajax({
-//            url: '/Retailer/GetRetailer', // Assuming this is the endpoint to fetch company details
-//            type: 'GET',
-//            data: { id: id }
-//        });
 
-//        console.log(response);
-//        // Assuming response contains company details
-//        populateCompanyDetails(response);
-//    } catch (error) {
-//        console.log(error);
-//    }
-//}
 
-function deleteCompany(id) {
+window.deleteCompany = async function (id) {
     $('#deleteAndDetailsModel').modal('show');
 
     $('#companyDetails').empty();

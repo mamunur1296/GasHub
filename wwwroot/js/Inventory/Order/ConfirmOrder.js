@@ -1,4 +1,5 @@
-﻿$(document).ready(async function () {
+﻿import { notification, notificationErrors } from "../../Utility/notification.js";
+$(document).ready(async function () {
     await GetOrderList();
 });
 
@@ -449,19 +450,19 @@ window.OrderDispatch = async function (id) {
 
                 if (response.success === true && response.status === 200) {
                     // Show success message
-                    $('#successMessage').text('Your Order was successfully updated.');
-                    $('#successMessage').show();
+                    notification({ message: "Your Order was successfully updated.", type: "success", title: "Success" });
                     // Reset the form
                     $('#PlasedOrderForm')[0].reset();
                     // Update the company list
                     await GetOrderList();
                     $('#modelCreate').modal('hide');
+                } else {
+                    notificationErrors({ message: response.errorMessage + response.title });
+                    $('#modelCreate').modal('hide');
                 }
             } catch (error) {
-                console.log('Error:', error);
-                // Show error message
-                $('#errorMessage').text('An error occurred while updating the company.');
-                $('#errorMessage').show();
+                notificationErrors({ message: error.message });
+                $('#modelCreate').modal('hide');
             }
         }
         
@@ -485,20 +486,18 @@ async function updateCompany(id) {
             debugger
 
             if (response.success === true && response.status === 200) {
-                // Show success message
-                $('#successMessage').text('Your Order was successfully updated.');
-                $('#successMessage').show();
-                // Reset the form
+                notification({ message: "Your Order was successfully updated.", type: "success", title: "Success" });
                 $('#PlasedOrderForm')[0].reset();
                 // Update the company list
                 await GetOrderList();
                 $('#modelCreate').modal('hide');
+            } else {
+                notificationErrors({ message: response.errorMessage + response.title });
+                $('#modelCreate').modal('hide');
             }
         } catch (error) {
-            console.log('Error:', error);
-            // Show error message
-            $('#errorMessage').text('An error occurred while updating the company.');
-            $('#errorMessage').show();
+            notificationErrors({ message: error.message });
+            $('#modelCreate').modal('hide');
         }
     }
 }

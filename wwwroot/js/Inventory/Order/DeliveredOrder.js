@@ -1,4 +1,5 @@
-﻿$(document).ready(async function () {
+﻿import { notification, notificationErrors } from "../../Utility/notification.js";
+$(document).ready(async function () {
     await GetOrderList();
 });
 
@@ -92,7 +93,7 @@ function onSuccess(orders, usersData, productsData, returnProductsData) {
         }).filter(Boolean); // Remove null entries
 
         console.log('onSuccess:', mergedData);
-        $('#CompanyTable').dataTable({
+        $('#GasHub_ConfirmDispatchOrder_Table').dataTable({
             destroy: true,
             processing: true,
             lengthChange: true,
@@ -197,15 +198,7 @@ function resetValidation() {
 }
 
 
-$('#btn-Create').click(function () {
-    $('#modelCreate input[type="text"]').val('');
-    $('#modelCreate').modal('show');
-    $('#btnSave').show();
-    $('#btnUpdate').hide();
-    populateUserDropdown();
-    populateProductDropdown();
-    populateReturnProductDropdown();
-});
+
 
 
 
@@ -223,45 +216,14 @@ function handleEnterKey(event) {
 
 
 // Open modal and focus on the first input field
-$('#modelCreate').on('shown.bs.modal', function () {
+$('#GasHub_ConfirmDispatchOrder_modelCreate').on('shown.bs.modal', function () {
     $('#CompanyForm input:first').focus();
 });
 
 // Listen for Enter key press on input fields
-$('#modelCreate').on('keypress', 'input', handleEnterKey);
+$('#GasHub_ConfirmDispatchOrder_modelCreate').on('keypress', 'input', handleEnterKey);
 
-//======================================================================
-// Submit button click event
-$('#btnSave').click(async function () {
-    console.log("Save");
-    debugger
-    // Check if the form is valid
-    if ($('#PlasedOrderForm').valid()) {
-        // Proceed with form submission
-        var formData = $('#PlasedOrderForm').serialize();
-        console.log(formData);
-        try {
-            var response = await $.ajax({
-                url: '/Order/Create',
-                type: 'post',
-                contentType: 'application/x-www-form-urlencoded',
-                data: formData
-            });
 
-            
-            if (response.success === true && response.status === 200) {
-                // Show success message
-                $('#successMessage').text('Your Order was successfully saved.');
-                $('#successMessage').show();
-                await GetOrderList();
-                $('#CompanyForm')[0].reset();
-                $('#modelCreate').modal('hide');
-            }
-        } catch (error) {
-            console.log('Error:', error);
-        }
-    }
-});
 
 async function populateUserDropdown() {
     try {
@@ -383,7 +345,7 @@ window.editCompany = async function (id) {
         debugger
         resetValidation()
         // Show modal for editing
-        $('#modelCreate').modal('show');
+        $('#GasHub_ConfirmDispatchOrder_modelCreate').modal('show');
         // Update button click event handler
         $('#btnUpdate').off('click').on('click', function () {
             updateCompany(id);
@@ -395,24 +357,6 @@ window.editCompany = async function (id) {
 
 
 
-// Details Company
-//async function showDetails(id) {
-//    $('#deleteAndDetailsModel').modal('show');
-//    // Fetch company details and populate modal
-//    try {
-//        const response = await $.ajax({
-//            url: '/Company/GetCompany',
-//            type: 'GET',
-//            data: { id: id }
-//        });
-
-//        console.log(response);
-//        // Assuming response contains company details
-//        populateCompanyDetails(response);
-//    } catch (error) {
-//        console.log(error);
-//    }
-//}
 
 window.OrderConfirmed = async function (id) {
     try {
@@ -450,20 +394,17 @@ window.OrderConfirmed = async function (id) {
                 debugger
 
                 if (response.success === true && response.status === 200) {
-                    // Show success message
-                    $('#successMessage').text('Your Order was successfully updated.');
-                    $('#successMessage').show();
-                    // Reset the form
+                    notification({ message: "Your Order was successfully Confirmed.", type: "success", title: "Success" });
                     $('#PlasedOrderForm')[0].reset();
-                    // Update the company list
                     await GetOrderList();
-                    $('#modelCreate').modal('hide');
+                    $('#GasHub_ConfirmDispatchOrder_modelCreate').modal('hide');
+                } else {
+                    notificationErrors({ message: response.errorMessage + response.title });
+                    $('#GasHub_ConfirmDispatchOrder_modelCreate').modal('hide');
                 }
             } catch (error) {
-                console.log('Error:', error);
-                // Show error message
-                $('#errorMessage').text('An error occurred while updating the company.');
-                $('#errorMessage').show();
+                notificationErrors({ message: error.message });
+                $('#GasHub_ConfirmDispatchOrder_modelCreate').modal('hide');
             }
         }
         
@@ -488,19 +429,17 @@ async function updateCompany(id) {
 
             if (response.success === true && response.status === 200) {
                 // Show success message
-                $('#successMessage').text('Your Order was successfully updated.');
-                $('#successMessage').show();
-                // Reset the form
+                notification({ message: "Your Order was successfully updated.", type: "success", title: "Success" });
                 $('#PlasedOrderForm')[0].reset();
-                // Update the company list
                 await GetOrderList();
-                $('#modelCreate').modal('hide');
+                $('#GasHub_ConfirmDispatchOrder_modelCreate').modal('hide');
+            } else {
+                notificationErrors({ message: response.errorMessage + response.title });
+                $('#GasHub_ConfirmDispatchOrder_modelCreate').modal('hide');
             }
         } catch (error) {
-            console.log('Error:', error);
-            // Show error message
-            $('#errorMessage').text('An error occurred while updating the company.');
-            $('#errorMessage').show();
+            notificationErrors({ message: error.message });
+            $('#GasHub_ConfirmDispatchOrder_modelCreate').modal('hide');
         }
     }
 }

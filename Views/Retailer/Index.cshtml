@@ -5,21 +5,7 @@
     Layout = "~/Views/Shared/_AdminLayoutPage.cshtml";
 }
 
-<section class="content-header">
-    <div class="container-fluid">
-        <div class="row mb-2">
-            <div class="col-sm-6">
-                <h1>Retailer</h1>
-            </div>
-            <div class="col-sm-6">
-                <ol class="breadcrumb float-sm-right">
-                    <li class="breadcrumb-item"><a asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li class="breadcrumb-item active">Retailer</li>
-                </ol>
-            </div>
-        </div>
-    </div><!-- /.container-fluid -->
-</section>
+
 
 <section class="content">
     <div class="container-fluid">
@@ -169,7 +155,5 @@
 
 
 @section Scripts {
-
-    <script src="~/js/inventory/retailer/retailer.js" type="module" asp-append-version="true"></script>
+    <script type="module" src="~/js/inventory/retailer/gashubretailer.js" asp-append-version="true"></script>
 }
-
