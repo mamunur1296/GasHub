@@ -59,6 +59,9 @@ namespace GasHub.Controllers
             }else if (register.ErrorMessage.Contains("ConfirmationPassword"))
             {
                 ModelState.AddModelError("ConfirmationPassword", "Password and confirmation password do not match.");
+            }else if (register.ErrorMessage.Contains("PasswordRequiresLower"))
+            {
+                ModelState.AddModelError("Password", "Passwords must have at least one lowercase ('a'-'z')");
             }
             else
             {

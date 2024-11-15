@@ -23,16 +23,12 @@ namespace GasHub.Models
         [RegularExpression(@"^(?:\+88|88)?(01[3-9]\d{8})$", ErrorMessage = "Invalid  Phone Number . Must be 11 digits.")]
         [DisplayName("Phone")]
         public string PhoneNumber { get; set; }
-
         [Required(ErrorMessage = "Password is Required")]
-        [StringLength(12, MinimumLength = 8, ErrorMessage = "Password must be between 8 and 12 characters.")]
-        [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,12}$", ErrorMessage = "Password must be between 8 and 12 characters and contain at least one uppercase letter, one lowercase letter, and one numeric digit.")]
         [DisplayName("Password")]
         public string Password { get; set; }
         public Guid? TraderId { get; set; }
         [Required(ErrorMessage = "Confirm Password is Required")]
-        [Compare("Password", ErrorMessage = "Password and confirmation password do not match.")]
-        [DisplayName("Confirm Password")]
+        
         public string ConfirmationPassword { get; set; }
         public List<string> Roles { get; set; }
     }
