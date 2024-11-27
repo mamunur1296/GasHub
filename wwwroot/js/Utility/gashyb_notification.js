@@ -8,7 +8,7 @@ export const notification = ({
     position = "toast-top-center" // Default position, can be overridden
 } = {}) => {
 
-    debugger
+
     console.log("Notification");
     // Set the options for Toastr
     toastr.options = {
@@ -57,7 +57,7 @@ export const notificationErrors = ({
     position = "toast-top-center" // Default position, can be overridden
 } = {}) => {
 
-    debugger
+
     console.log("Notification");
     // Set the options for Toastr
     toastr.options = {

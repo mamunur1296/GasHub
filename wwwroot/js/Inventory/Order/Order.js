@@ -1,4 +1,4 @@
-﻿import { notification, notificationErrors } from "../../Utility/notification.js";
+﻿import { notification, notificationErrors } from "../../Utility/gashyb_notification.js";
 
 $(document).ready(async function () {
     await GetOrderList();
@@ -138,7 +138,7 @@ function onSuccess(orders, usersData, productsData, returnProductsData) {
                     data: 'id',
                     render: function (data) {
                         return '<button class="btn btn-primary btn-sm ms-1" onclick="editOrder(\'' + data + '\')">Edit</button>' + ' ' +
-                            '<button class="btn btn-info btn-sm ms-1" onclick="showDetails(\'' + data + '\')">Details</button>' + ' ' +
+                            '<button class="btn btn-info btn-sm ms-1" onclick="showDetails(\'' + data + '\')">Invoice</button>' + ' ' +
                             '<button class="btn btn-danger btn-sm ms-1" onclick="deleteOrder(\'' + data + '\')">Delete</button>';
                     }
                 }
@@ -435,23 +435,15 @@ async function updateOrder(id) {
 }
 
 // Details Company
-//async function showDetails(id) {
-//    $('#GasHub_Order_deleteAndDetailsModel').modal('show');
-//    // Fetch company details and populate modal
-//    try {
-//        const response = await $.ajax({
-//            url: '/Company/GetCompany',
-//            type: 'GET',
-//            data: { id: id }
-//        });
+window.showDetails = async function (id) {
+    debugger;
 
-//        console.log(response);
-//        // Assuming response contains company details
-//        populateCompanyDetails(response);
-//    } catch (error) {
-//        console.log(error);
-//    }
-//}
+    const isDownload = false;  // Set this as needed
+    const url = '/Report/DownloadOrderInvoice?id=' + id + '&isDownload=' + isDownload;
+    //window.location.href = url;  
+    window.open(url, '_blank');
+};
+
 
 window.deleteOrder = function (id) {
     debugger

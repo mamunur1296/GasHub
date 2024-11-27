@@ -1,4 +1,4 @@
-﻿import { notification, notificationErrors } from "../../Utility/notification.js";
+﻿import { notification, notificationErrors } from "../../Utility/gashyb_notification.js";
 
 $(document).ready(async function () {
     await GetCompanyList();
@@ -331,15 +331,23 @@ window.deleteCompany = function (id) {
     $('#GasHub_Company_deleteAndDetailsModel').modal('show');
 
     $('#companyDetails').empty();
-    $('#btnDelete').click(function () {
+    $('#btnDelete').click(function (e) {
+        e.preventDefault;
         $.ajax({
             url: '/Company/Delete',
             type: 'POST',
             data: { id: id },
             success: function (response) {
-                $('#GasHub_Company_deleteAndDetailsModel').modal('hide');
-                notification({ message: "Company was successfully deleted.", type: "success", title: "Success" });
-                GetCompanyList();
+                debugger
+                if (response.success && response.status === 200) {
+                    $('#GasHub_Company_deleteAndDetailsModel').modal('hide');
+                    notification({ message: "Company was successfully deleted.", type: "success", title: "Success" });
+                    GetCompanyList();
+                } else {
+                    notificationErrors({ message: response.detail, type: "error", title: "Error" });
+                    $('#GasHub_Company_deleteAndDetailsModel').modal('hide');
+                }
+                
             },
             error: function (xhr, status, error) {
                 notificationErrors({ message: error.message });

@@ -56,6 +56,8 @@ namespace GasHub.Services.Implemettions
             return JsonConvert.DeserializeObject<T>(response);
         }
 
+        
+
         // Adds a new client asynchronously by sending a POST request to the specified endpoint
         public async Task<ResponseDto> PostClientAsync(string endpoint, T client)
         {

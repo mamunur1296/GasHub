@@ -6,6 +6,7 @@ namespace GasHub.Services.Interface
     {
         Task<IEnumerable<T>> GetAllClientsAsync(string endpoint);
         Task<T> GetClientByIdAsync(string endpoint);
+    
         Task<ResponseDto> PostClientAsync(string endpoint, T data);
         Task<ResponseDto> UpdateClientAsync(string endpoint, T data);
         Task<ResponseDto> DeleteClientAsync(string endpoint);

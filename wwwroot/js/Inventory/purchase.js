@@ -1,6 +1,6 @@
-﻿import { notification } from '../Utility/notification.js';
-import { clearMessage, createActionButtons, dataToMap, displayNotification, initializeDataTable, loger, resetFormValidation, resetValidation, showCreateModal, showExceptionMessage } from '../utility/helpers.js';
-import { SendRequest, populateDropdown } from '../utility/sendrequestutility.js';
+﻿import { notification } from '../Utility/gashyb_notification.js';
+import { clearMessage, createActionButtons, dataToMap, displayNotification, initializeDataTable, loger, resetFormValidation, resetValidation, showCreateModal, showExceptionMessage } from '../utility/gashyb_helpers.js';
+import { SendRequest, populateDropdown } from '../utility/gashyb_sendrequestutility.js';
 
 $(document).ready(async function () {
     await getPurchaseList();
@@ -67,7 +67,7 @@ function onSuccessPurchases(purchases, suppliers) {
                 data: null,
                 render: (data, type, row, meta) => {
                     return '<button class="btn btn-primary btn-sm ms-1" onclick="editPurchase(\'' + row.id + '\')">Edit</button>' +
-                        ' <button class="btn btn-info btn-sm ms-1" onclick="showPurchase(\'' + row.id + '\')">Details</button>' +
+                        ' <button class="btn btn-info btn-sm ms-1" onclick="showPurchase(\'' + row.id + '\')">Invoice</button>' +
                         ' <button class="btn btn-danger btn-sm ms-1" onclick="deletePurchase(\'' + row.id + '\')">Delete</button>';
                 }
             }
@@ -237,12 +237,12 @@ window.updatePurchase = async (id) => {
     loger(result);
 }
 
-
-
-
-////window.showDetails = async (id) => {
-////    loger("showDetails id " + id);
-////}
+window.showPurchase = async (id) => {
+    const isDownload = false;  // Set this as needed
+    const url = '/Report/DownloadPurchaseInvoice?id=' + id + '&isDownload=' + isDownload;
+    //window.location.href = url;  
+    window.open(url, '');
+}
 
 
 window.deletePurchase = async (id) => {

@@ -1,8 +1,6 @@
-﻿
-
-import { loger } from "../utility/helpers.js";
-import { notification } from "../utility/notification.js";
-import { SendRequest, populateDropdown } from '../utility/sendrequestutility.js';
+﻿import { notification } from "../Utility/gashyb_notification.js";
+import { loger } from "../utility/gashyb_helpers.js";
+import { SendRequest } from '../utility/gashyb_sendrequestutility.js';
 
 // Initialize the purchase functionality when the document is ready
 $(document).ready(async function () {
@@ -14,14 +12,6 @@ $(document).ready(async function () {
     loadSupplierFromLocalStorage();
     togglePurchaseButton();
 });  
-
-
-
-
-
-
-
-
 
 
 
@@ -58,7 +48,7 @@ const searchProducts = () => {
 // Function to set up autocomplete for product search
 // Function to set up autocomplete for supplier search
 const searchSupplair = () => {
-    $("#phoneNumber").autocomplete({
+    $("#gasHub_supplairName").autocomplete({
         source: async function (request, response) {
             try {
                 // Send request to search suppliers based on user input
@@ -82,7 +72,7 @@ const searchSupplair = () => {
             displaySupplierDetails(ui.item);
 
             // Clear the input field after selection
-            $("#phoneNumber").val('');
+            $("#gasHub_supplairName").val('');
         }
     });
 };
@@ -234,15 +224,7 @@ const PurchaseProductVawserControler = async () => {
     const newRow = `
         <div class="h-100">
             <div class="border px-3 rounded">
-                <!-- Company and Branch Details -->
-                <div class="d-flex justify-content-between">
-                    <p class="mb-0">Name Of Company:</p>
-                    <p class="mb-0">Sample Company</p>
-                </div>
-                <div class="d-flex justify-content-between">
-                    <p class="mb-0">Name Of Branch:</p>
-                    <p class="mb-0">Sample Branch</p>
-                </div>
+                
                 <hr style="border: 1px solid;" />
 
                 <!-- Products List - Scrollable Area -->
@@ -337,7 +319,13 @@ window.paymentButton = async () => {
                     debugger
                     if (result.success && result.status === 201) {
                         clearAll();
-                        alert(result.data);
+                        debugger
+                        const isDownload = true;  // Set this as needed
+                        const url = '/Report/DownloadPurchaseInvoice?id=' + result.data + '&isDownload=' + isDownload;
+                        //window.location.href = url;  
+                        window.open(url, '/NewPurchase');
+                        debugger
+                        notification({ message: "Purchase Confirm successfully !", type: "success", title: "Success" });
                     } else {
                         alert("Lgoin Valid Admin OR User");
                     }

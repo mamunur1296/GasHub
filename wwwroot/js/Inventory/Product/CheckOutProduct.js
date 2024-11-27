@@ -1,4 +1,7 @@
-﻿$(document).ready(async function () {
+﻿
+import { notification, notificationErrors } from "../../utility/gashyb_notification.js";
+
+$(document).ready(async function () {
     await getLocalStorageList();
     await updateTotals();
     await addressOptions();
@@ -471,9 +474,20 @@ window.navigateToConfirmOrder = async function () {
             data: formData,
             dataType: 'json'
         });
-
+        debugger
         if (response.success === true) {
-            alert(response.data);
+            if (response.data) {
+                debugger
+                
+                const isDownload = true;  // Set this as needed
+                const url = '/Report/DownloadCustomerInvoice?id=' + response.data + '&isDownload=' + isDownload;
+                //window.location.href = url;  
+                window.open(url, '/Home/Product');
+                notification({ message: "Order Confirm successfully !", type: "success", title: "Success" });
+            } else {
+                notificationErrors({ message: response.data });
+            }
+            debugger
             localStorage.removeItem('productIds')
             window.location.href = '/Home/Product';
         } else {

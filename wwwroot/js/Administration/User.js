@@ -1,4 +1,4 @@
-﻿import { notification, notificationErrors } from '../Utility/notification.js';
+﻿import { notification, notificationErrors } from '../Utility/gashyb_notification.js';
 $(document).ready(async function () {
     await GetUserList();
 });
