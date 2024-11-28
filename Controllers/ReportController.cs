@@ -186,7 +186,7 @@ namespace GasHub.Controllers
                    
                     var unitPrice = product.ProdPrice;
                     var quantity = int.TryParse(od.Comments, out var parsedQuantity) ? parsedQuantity : 0;
-                    var totalPrice = quantity * unitPrice - (discount);
+                    var totalPrice = Math.Round(quantity * unitPrice - (discount * quantity), 2);
 
 
                     return new OrderReportDto
@@ -283,7 +283,7 @@ namespace GasHub.Controllers
                     UnitPrice = od.UnitPrice,  
                     Quantity = od.Quantity,
                     Discount = od.Discount,
-                    TotalPrice = Math.Round(od.Quantity * od.UnitPrice * (1 - od.Discount / 100), 2) // Calculate total per line with 2 decimals
+                    TotalPrice = Math.Round(od.Quantity * od.UnitPrice - od.Discount, 2) // Calculate total per line with 2 decimals
                 }).ToList();
                 // Calculate subtotal and create the ReportOrder object
                 var subtotal = Math.Round(ReportPurchaseDetail.Sum(item => item.TotalPrice), 2); // Ensure Subtotal has 2 decimal places

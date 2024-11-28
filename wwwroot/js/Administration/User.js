@@ -141,6 +141,11 @@ const GasHub_UserForm = $('#GasHub_UserForm').validate({
         Roles: {
             required: true
         }
+
+        ,
+        TraderId: {
+            required: true
+        }
     },
     messages: {
         FirstName: {

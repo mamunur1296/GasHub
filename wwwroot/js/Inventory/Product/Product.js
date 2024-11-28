@@ -1,4 +1,5 @@
-﻿$(document).ready(async function () {
+﻿import { notification, notificationErrors } from "../../Utility/gashyb_notification.js";
+$(document).ready(async function () {
     await GetProductList();
 });
 
@@ -184,6 +185,9 @@ const companyForm = $('#CompanyForm').validate({
         },
         ProdPrice: {
             required: true,
+        },
+        FormFile: {
+            required: true,
         }
     },
     messages: {
@@ -299,9 +303,7 @@ $('#btnSave').click(async function () {
             $('#ProductNameError').text('Product Name  is already taken.').hide();
             $('#ProductSizeError').text('Product Size  is already Exjist.').hide();
             if (response.success === true && response.status === 200) {
-                // Show success message
-                $('#successMessage').text('Your Product was successfully saved.');
-                $('#successMessage').show();
+                notification({ message: "Your Product was successfully saved.", type: "success", title: "Success" });
                 await GetProductList();
                 $('#CompanyForm')[0].reset();
                 $('#modelCreate').modal('hide');
@@ -314,9 +316,13 @@ $('#btnSave').click(async function () {
                 } else {
                     $('#GeneralError').text('Failed to save the user: ').show();
                 }
+            } else {
+                notificationErrors({ message: response.errorMessage });
+                $('#modelCreate').modal('hide');
             }
         } catch (error) {
-            console.log('Error:', error);
+            notificationErrors({ message: error.message });
+            $('#modelCreate').modal('hide');
         }
     }
 });
@@ -486,27 +492,24 @@ async function updateCompany(id) {
                 type: 'put',
                 contentType: 'application/x-www-form-urlencoded',
                 data: formData,
-                processData: false, // Prevent jQuery from processing data (handled by FormData)
-                contentType: false,   // Set to false to allow FormData to set headers
-                cache: false         // Disable caching for file uploads
+                processData: false, 
+                contentType: false,   
+                cache: false         
             });
 
             
             if (response.success === true && response.status === 200) {
-                // Show success message
-                $('#successMessage').text('Your Product was successfully updated.');
-                $('#successMessage').show();
-                // Reset the form
+                notification({ message: "Your Product was successfully updated.", type: "success", title: "Success" });
                 $('#CompanyForm')[0].reset();
-                // Update the company list
                 await GetProductList();
+                $('#modelCreate').modal('hide');
+            } else {
+                notificationErrors({ message: response.errorMessage + response.title });
                 $('#modelCreate').modal('hide');
             }
         } catch (error) {
-            console.log('Error:', error);
-            // Show error message
-            $('#errorMessage').text('An error occurred while updating the company.');
-            $('#errorMessage').show();
+            notificationErrors({ message: error.message });
+            $('#modelCreate').modal('hide');
         }
     }
 }
@@ -542,13 +545,17 @@ window.deleteCompany = function (id) {
                 type: 'POST',
                 data: { id: id }
             });
-
-            $('#deleteAndDetailsModel').modal('hide');
-            $('#successMessage').text('Your Product was successfully Delete..');
-            $('#successMessage').show();
-            await GetProductList();
+            
+            if (response.success === true && response.status === 200) {
+                notification({ message: "Your Product was successfully Delete.", type: "success", title: "Success" });
+                $('#deleteAndDetailsModel').modal('hide');
+                await GetProductList();
+            } else {
+                notificationErrors({ message: response.errorMessage });
+                $('#deleteAndDetailsModel').modal('hide');
+            }
         } catch (error) {
-            console.log(error);
+            notificationErrors({ message: error.message });
             $('#deleteAndDetailsModel').modal('hide');
         }
     });

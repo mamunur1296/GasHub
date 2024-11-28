@@ -1,4 +1,5 @@
-﻿$(document).ready(async function () {
+﻿import { notification, notificationErrors } from "../../Utility/gashyb_notification.js";
+$(document).ready(async function () {
     await GetTraderList();
 });
 
@@ -252,15 +253,17 @@ $('#btnSave').click(async function () {
 
             
             if (response.success === true && response.status === 200) {
-                // Show success message
-                $('#successMessage').text('Your Trader was successfully saved.');
-                $('#successMessage').show();
+                notification({ message: "Your Trader was successfully saved.", type: "success", title: "Success" });
                 await GetTraderList()
                 $('#CompanyForm')[0].reset();
                 $('#modelCreate').modal('hide');
+            } else {
+                notificationErrors({ message: response.errorMessage });
+                $('#modelCreate').modal('hide');
             }
         } catch (error) {
-            console.log('Error:', error);
+            notificationErrors({ message: error.message });
+            $('#modelCreate').modal('hide');
         }
     }
 });
@@ -344,20 +347,17 @@ async function updateCompany(id) {
 
             
             if (response.success === true && response.status === 200) {
-                // Show success message
-                $('#successMessage').text('Your Trader was successfully updated.');
-                $('#successMessage').show();
-                // Reset the form
+                notification({ message: "Your Trader was successfully updated.", type: "success", title: "Success" });
                 $('#CompanyForm')[0].reset();
-                // Update the company list
                 await GetTraderList();
+                $('#modelCreate').modal('hide');
+            } else {
+                notificationErrors({ message: response.errorMessage + response.title });
                 $('#modelCreate').modal('hide');
             }
         } catch (error) {
-            console.log('Error:', error);
-            // Show error message
-            $('#errorMessage').text('An error occurred while updating the company.');
-            $('#errorMessage').show();
+            notificationErrors({ message: error.message });
+            $('#modelCreate').modal('hide');
         }
     }
 }
@@ -393,14 +393,15 @@ window.deleteCompany = function (id) {
                 data: { id: id }
             });
             if (response.success === true && response.status === 200) {
+                notification({ message: "Your Trader was successfully Delete.", type: "success", title: "Success" });
                 $('#deleteAndDetailsModel').modal('hide');
-                $('#successMessage').text('Your Trader was successfully Delete.');
-                $('#successMessage').show();
                 await GetTraderList()
+            } else {
+                notificationErrors({ message: response.errorMessage });
+                $('#deleteAndDetailsModel').modal('hide');
             }
-            
         } catch (error) {
-            console.log(error);
+            notificationErrors({ message: error.message });
             $('#deleteAndDetailsModel').modal('hide');
         }
     });
