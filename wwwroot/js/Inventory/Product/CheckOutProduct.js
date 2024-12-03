@@ -6,6 +6,7 @@ $(document).ready(async function () {
     await updateTotals();
     await addressOptions();
     await ReturnProductList();
+    CheckOnlineAndCatchOndelivery();
 });
 
 async function getLocalStorageList() {
@@ -431,20 +432,41 @@ async function getAllValvList() {
     }
 }
 
+function CheckOnlineAndCatchOndelivery() {
+    var onlinePayment = $('#Onlinepayment');
+    var cashOnDelivery = $('#CashonDelivery');
+
+    // Correctly attach event listeners for changes (use .change() or .on('change'))
+    onlinePayment.change(function () {
+        ConfirmOrderBtnActivity(true);
+    });
+
+    cashOnDelivery.change(function () {
+        ConfirmOrderBtnActivity(true);
+    });
+}
+
 async function ConfirmOrderBtnActivity(isActive = false) {
     var $button = $('#add-order-and-return-product');
+    var onlinePayment = $('#Onlinepayment');
+    var cashOnDelivery = $('#CashonDelivery');
 
     if (isActive) {
-        $button.removeClass('bg-secondary').addClass('bg-success');
-        $button.prop('disabled', false);
+        if (onlinePayment.prop('checked') || cashOnDelivery.prop('checked')) {
+            $button.removeClass('bg-secondary').addClass('bg-success');
+            $button.prop('disabled', false);
+        } else {
+            $button.removeClass('bg-success').addClass('bg-secondary');
+            $button.prop('disabled', true);
+        }
+        
     } else {
         $button.removeClass('bg-success').addClass('bg-secondary');
         $button.prop('disabled', true);
     }
 }
 
-window.navigateToConfirmOrder = async function () {
-    debugger
+async function ConfirmOrderBycashOnDelivery() {
     const userId = $('#address-container').data('user-id')?.toString();
     if (!userId) {
         console.error("User ID not found in address container.");
@@ -478,7 +500,7 @@ window.navigateToConfirmOrder = async function () {
         if (response.success === true) {
             if (response.data) {
                 debugger
-                
+
                 const isDownload = true;  // Set this as needed
                 const url = '/Report/DownloadCustomerInvoice?id=' + response.data + '&isDownload=' + isDownload;
                 //window.location.href = url;  
@@ -496,13 +518,35 @@ window.navigateToConfirmOrder = async function () {
     } catch (error) {
         console.error("Error during order confirmation:", error);
     }
-
-
-
-
-
-    
 }
+async function ConfirmOrderByOnlinePayment() {
+    const url = "/OnlinePayment";
+    window.location.href = url;
+}
+window.navigateToConfirmOrder = async function () {
+    debugger;  // Optional for debugging, can be removed after testing
+    var onlinePayment = $('#Onlinepayment');
+    var cashOnDelivery = $('#CashonDelivery');
+    var OrderErrorMessage = $('#OrderErrorMessage');
+
+    // Check if both cash on delivery and online payment are checked
+    if (cashOnDelivery.prop('checked') && onlinePayment.prop('checked')) {
+        // If both are checked, show an error message
+        OrderErrorMessage.html("Please check only one payment method.");
+        return;  // Prevent proceeding further
+    }
+
+    // If only one option is selected, proceed to confirm order
+    if (cashOnDelivery.prop('checked')) {
+
+        await ConfirmOrderBycashOnDelivery();
+    } else if (onlinePayment.prop('checked')) {
+        await ConfirmOrderByOnlinePayment();
+    } else {
+        OrderErrorMessage.html("Please select a payment method.");
+    }
+};
+
 
 async function processReturnProducts(storedProducts, products) {
     const returnProducts = [];

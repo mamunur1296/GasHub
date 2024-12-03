@@ -137,9 +137,7 @@ function onSuccess(orders, usersData, productsData, returnProductsData) {
                 {
                     data: 'id',
                     render: function (data) {
-                        return '<button class="btn btn-primary btn-sm ms-1" onclick="editOrder(\'' + data + '\')">Edit</button>' + ' ' +
-                            '<button class="btn btn-info btn-sm ms-1" onclick="showDetails(\'' + data + '\')">Invoice</button>' + ' ' +
-                            '<button class="btn btn-danger btn-sm ms-1" onclick="deleteOrder(\'' + data + '\')">Delete</button>';
+                        return '<button class="btn btn-info btn-sm ms-1" onclick="showDetails(\'' + data + '\')">Invoice</button>' ;
                     }
                 }
             ]

@@ -8,10 +8,12 @@ async function addToCard() {
     function formatPrice(price) {
         return 'TK : ' + price.toFixed(2);
     }
-
+    debugger
     // Retrieve stored product IDs and counts
     var storedProductIds = JSON.parse(localStorage.getItem('productIds')) || {};
-
+    let totalitemCount = Object.values(storedProductIds).reduce((sum, count) => sum + count, 0);
+    $('#CardItemCount').text(totalitemCount);
+    debugger
     // Clear the cart items container
     var cartItemsContainer = $('#cart-items');
     cartItemsContainer.empty();

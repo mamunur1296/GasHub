@@ -18,30 +18,30 @@
 	}
 	//end
 
-    (function () {
-        const countDown = new Date(birthday).getTime();
-        const day = 1000 * 60 * 60 * 24;
-        const hour = 1000 * 60 * 60;
-        const minute = 1000 * 60;
-        const second = 1000;
+    //(function () {
+    //    const countDown = new Date(birthday).getTime();
+    //    const day = 1000 * 60 * 60 * 24;
+    //    const hour = 1000 * 60 * 60;
+    //    const minute = 1000 * 60;
+    //    const second = 1000;
 
-        const x = setInterval(function () {
-            const now = new Date().getTime();
-            const distance = countDown - now;
+    //    const x = setInterval(function () {
+    //        const now = new Date().getTime();
+    //        const distance = countDown - now;
 
-            document.getElementById("day").innerText = Math.floor(distance / day);
-            document.getElementById("Hours").innerText = Math.floor((distance % day) / hour);
-            document.getElementById("Minutes").innerText = Math.floor((distance % hour) / minute);
-            document.getElementById("Seconds").innerText = Math.floor((distance % minute) / second);
+    //        document.getElementById("day").innerText = Math.floor(distance / day);
+    //        document.getElementById("Hours").innerText = Math.floor((distance % day) / hour);
+    //        document.getElementById("Minutes").innerText = Math.floor((distance % hour) / minute);
+    //        document.getElementById("Seconds").innerText = Math.floor((distance % minute) / second);
 
-            //do something later when date is reached
-            if (distance < 0) {
-                document.getElementById("headline").innerText = "It's my birthday!";
-                document.getElementById("countdown").style.display = "none";
-                document.getElementById("content").style.display = "block";
-                clearInterval(x);
-            }
-        }, 1000);
-    })();
+    //        //do something later when date is reached
+    //        if (distance < 0) {
+    //            document.getElementById("headline").innerText = "It's my birthday!";
+    //            document.getElementById("countdown").style.display = "none";
+    //            document.getElementById("content").style.display = "block";
+    //            clearInterval(x);
+    //        }
+    //    }, 1000);
+    //})();
 
 })();

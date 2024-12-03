@@ -66,9 +66,8 @@ function onSuccessPurchases(purchases, suppliers) {
             {
                 data: null,
                 render: (data, type, row, meta) => {
-                    return '<button class="btn btn-primary btn-sm ms-1" onclick="editPurchase(\'' + row.id + '\')">Edit</button>' +
-                        ' <button class="btn btn-info btn-sm ms-1" onclick="showPurchase(\'' + row.id + '\')">Invoice</button>' +
-                        ' <button class="btn btn-danger btn-sm ms-1" onclick="deletePurchase(\'' + row.id + '\')">Delete</button>';
+                    return ' <button class="btn btn-info btn-sm ms-1" onclick="showPurchase(\'' + row.id + '\')">Invoice</button>';
+                       
                 }
             }
         ]

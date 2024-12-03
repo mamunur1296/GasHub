@@ -31,6 +31,8 @@ namespace GasHub.Models
         [DisplayName("Status")]
         public bool IsActive { get; set; }
 
+        public int? IsStock { get; set; }
+
         // Navigation properties
         public virtual Company Company { get; set; }
         public virtual ProductSize Size { get; set; }

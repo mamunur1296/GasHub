@@ -40,9 +40,7 @@ namespace GasHub.Controllers
 
             try
             {
-                // Fetch the specific order
-                var orders = await _orderServices.GetAllClientsAsync("Order/getAllOrder");
-                var order = orders.FirstOrDefault(or => or.Id.ToString() == id);
+                var order = await _orderServices.GetClientByIdAsync($"Order/getReport/{id}");
                 if (order == null)
                     throw new KeyNotFoundException($"Order with ID {id} not found.");
                 var user = await _userServices.GetClientByIdAsync($"User/GetUserDetails/{order.UserId}");
@@ -53,86 +51,67 @@ namespace GasHub.Controllers
                 if (address == null)
                     throw new KeyNotFoundException($"address  not found.");
                 // Fetch related data
-                var orderDetails = orders.Where(od => od.TransactionNumber == order.TransactionNumber).ToList();
-                var products = (await _productServices.GetAllClientsAsync("Product/getAllProduct")).ToDictionary(p => p.Id);
-                var productDiscounts = (await _productDiscuntServices.GetAllClientsAsync("ProductDiscunt/getAllProductDiscunt"))
-                                        .ToDictionary(pd => pd.ProductId, pd => pd.DiscountedPrice);
-
-                // Map to DTO
-                var reportOrderDetails = orderDetails.Select(od =>
-                {
-                    // Fetch product details
-                    if (!products.TryGetValue(od.ProductId, out var product))
-                        throw new KeyNotFoundException($"Product with ID {od.ProductId} not found.");
-
-                    // Calculate discount
-                    var discount = productDiscounts.ContainsKey(od.ProductId) ? productDiscounts[od.ProductId] : 0;
-                    var unitPrice = product.ProdPrice;
-                    var quantity = int.TryParse(od.Comments, out var parsedQuantity) ? parsedQuantity : 0; 
-                    var totalPrice = quantity * unitPrice - (  discount );
-
-
-                    return new OrderReportDto
-                    {
-                        OrderID = order.Id,
-                        ProductID = od.ProductId,
-                        ProductName = product.Name,
-                        UnitPrice = unitPrice,
-                        Quantity = quantity,
-                        Discount = discount,
-                        TotalPrice = totalPrice
-                    };
-                }).ToList();
-
-                // Calculate subtotal and create the ReportOrder object
-                var subtotal = Math.Round(reportOrderDetails.Sum(item => item.TotalPrice), 2); // Ensure Subtotal has 2 decimal places
-                var deliveryCharge = 50.00;  // Assuming delivery charge is fixed
-                var total = Math.Round((double)subtotal + (double)deliveryCharge, 2);  // Ensure Total has 2 decimal places
-                var ReportOrder = new
+                var ReportPurchaseDetail = order.OrderDetail.Select(od => new OrderReportDto
                 {
                     OrderID = order.Id,
-                    CustomerName = user?.FirstName + user?.LastName,
-                    CustomerPhone = address?.Phone,
-                    EmployeeName = "Employee Name",
-                    EmployeePhone = "Employee Phone",
-                    CreationDate = order.CreationDate,
-                    CustomerAddress = address?.Address,
-                    Subtotal = subtotal.ToString("F2"),
-                    DalivaryCharge = deliveryCharge.ToString("F2"),
-                    Total = total.ToString("F2"),
-                    Paid = total.ToString("F2"),
-                    TodayDate = DateTime.Now.ToString("MM/dd/yy"),
-                    CurrentTime = DateTime.Now.ToString("hh:mm:ss tt"),
-                    InvoiceNumber = order.TransactionNumber,
+                    ProductID = Guid.Parse(od.ProductID),
+                    ProductName = od?.Product?.Name,
+                    UnitPrice = od.UnitPrice,
+                    Quantity = od.Quantity,
+                    Discount = od.Discount,
+                    TotalPrice = Math.Round(od.Quantity * od.UnitPrice - od.Discount * od.Quantity, 2) // Calculate total per line with 2 decimals
+                }).ToList();
+
+
+
+                // calculate subtotal and create the reportorder object
+                var subtotal = Math.Round(ReportPurchaseDetail.Sum(item => item.TotalPrice), 2); // ensure subtotal has 2 decimal places
+                var deliverycharge = 50.00;  // assuming delivery charge is fixed
+                var total = Math.Round((double)subtotal + (double)deliverycharge, 2);  // ensure total has 2 decimal places
+                var reportorder = new
+                {
+                    orderid = order.Id,
+                    customername = user?.FirstName + user?.LastName,
+                    customerphone = address?.Phone,
+                    employeename = "employee name",
+                    employeephone = "employee phone",
+                    creationdate = order.CreationDate,
+                    customeraddress = address?.Address,
+                    subtotal = subtotal.ToString("f2"),
+                    dalivarycharge = deliverycharge.ToString("f2"),
+                    total = total.ToString("f2"),
+                    paid = total.ToString("f2"),
+                    todaydate = DateTime.Now.ToString("mm/dd/yy"),
+                    currenttime = DateTime.Now.ToString("hh:mm:ss tt"),
+                    invoicenumber = order.TransactionNumber,
                 };
 
 
-                // Convert to DataTables
-                var dtOrderDetails = dtHelpers.ListToDt(reportOrderDetails);
-                var dtOrder = dtHelpers.ObjectToDataTable(ReportOrder);
+                // convert to datatables
+                var dtorderdetails = dtHelpers.ListToDt(ReportPurchaseDetail);
+                var dtorder = dtHelpers.ObjectToDataTable(reportorder);
 
-                // Set up the report path using the WebRootPath
-                string reportPath = Path.Combine(_webHostEnvironment.WebRootPath, "Repots", "OrderInvoice.rdlc");
+                // set up the report path using the webrootpath
+                string reportpath = Path.Combine(_webHostEnvironment.WebRootPath, "Repots", "OrderInvoice.rdlc");
 
-                // Check if the report file exists
-                if (!System.IO.File.Exists(reportPath))
+                if (!System.IO.File.Exists(reportpath))
                 {
                     return NotFound("Report file not found.");
                 }
 
-                // Create the local report with the correct path
-                var localReport = new LocalReport(reportPath);
+                // create the local report with the correct path
+                var localreport = new LocalReport(reportpath);
 
-                // Add the data source to the report
-                localReport.AddDataSource("OrdereDetailsList", dtOrderDetails);
-                localReport.AddDataSource("Order", dtOrder);
+                // add the data source to the report
+                localreport.AddDataSource("OrdereDetailsList", dtorderdetails);
+                localreport.AddDataSource("Order", dtorder);
 
-                // Render the report as a PDF
-                var result = localReport.Execute(RenderType.Pdf, 1, null, mimeType);
+                //render the report as a pdf
+               var result = localreport.Execute(RenderType.Pdf, 1, null, mimeType);
                 if (isDownload)
                 {
-                    // Return the PDF file
-                    return File(result.MainStream.ToArray(), mimeType, "Invoice.pdf");
+                    // return the pdf file
+                    return File(result.MainStream.ToArray(), mimeType, "invoice.pdf");
                 }
                 else
                 {
@@ -157,70 +136,50 @@ namespace GasHub.Controllers
                 // Fetch the specific order
                 var orders = await _orderServices.GetAllClientsAsync("Order/getTotalOrder");
                 var order = orders.FirstOrDefault(or => or.TransactionNumber == id);
-                if (order == null)
+                var reportorder = await _orderServices.GetClientByIdAsync($"Order/getReport/{order.Id}");
+                if (reportorder == null)
                     throw new KeyNotFoundException($"Order with ID {id} not found.");
-                var user = await _userServices.GetClientByIdAsync($"User/GetUserDetails/{order.UserId}");
+                var user = await _userServices.GetClientByIdAsync($"User/GetUserDetails/{reportorder.UserId}");
                 if (user == null)
-                    throw new KeyNotFoundException($"User with ID {order.UserId} not found.");
+                    throw new KeyNotFoundException($"User with ID {reportorder.UserId} not found.");
                 var DeliveryAddress = await _deliveryAddressServices.GetAllClientsAsync("DeliveryAddress/getAllDeliveryAddress");
                 var address = DeliveryAddress.FirstOrDefault(da => da.UserId == user.Id);
                 if (address == null)
                     throw new KeyNotFoundException($"address  not found.");
                 // Fetch related data
-                var orderDetails = orders.Where(od => od.TransactionNumber == order.TransactionNumber).ToList();
-                var products = (await _productServices.GetAllClientsAsync("Product/getAllProduct")).ToDictionary(p => p.Id);
-                var productDiscounts = (await _productDiscuntServices
-                        .GetAllClientsAsync("ProductDiscunt/getAllProductDiscunt"))
-                        .Where(pd => pd.ValidTill > DateTime.Now) // Filter only valid discounts
-                        .ToDictionary(pd => pd.ProductId, pd => pd.DiscountedPrice);
-
-                // Map to DTO
-                var reportOrderDetails = orderDetails.Select(od =>
+                var reportOrderDetails = reportorder.OrderDetail.Select(od => new OrderReportDto
                 {
-                    // Fetch product details
-                    if (!products.TryGetValue(od.ProductId, out var product))
-                        throw new KeyNotFoundException($"Product with ID {od.ProductId} not found.");
-
-                    // Calculate discount
-                    var discount = productDiscounts.ContainsKey(od.ProductId) ? productDiscounts[od.ProductId] : 0;
-                   
-                    var unitPrice = product.ProdPrice;
-                    var quantity = int.TryParse(od.Comments, out var parsedQuantity) ? parsedQuantity : 0;
-                    var totalPrice = Math.Round(quantity * unitPrice - (discount * quantity), 2);
-
-
-                    return new OrderReportDto
-                    {
-                        OrderID = order.Id,
-                        ProductID = od.ProductId,
-                        ProductName = product.Name,
-                        UnitPrice = unitPrice,
-                        Quantity = quantity,
-                        Discount = discount,
-                        TotalPrice = totalPrice
-                    };
+                    OrderID = reportorder.Id,
+                    ProductID = Guid.Parse(od.ProductID),
+                    ProductName = od?.Product?.Name,
+                    UnitPrice = od.UnitPrice,
+                    Quantity = od.Quantity,
+                    Discount = od.Discount,
+                    TotalPrice = Math.Round(od.Quantity * od.UnitPrice - od.Discount * od.Quantity, 2) // Calculate total per line with 2 decimals
                 }).ToList();
 
-                // Calculate subtotal and create the ReportOrder object
-                var subtotal = Math.Round(reportOrderDetails.Sum(item => item.TotalPrice), 2); // Ensure Subtotal has 2 decimal places
-                var deliveryCharge = 50.00;  // Assuming delivery charge is fixed
-                var total = Math.Round((double)subtotal + (double)deliveryCharge, 2);  // Ensure Total has 2 decimal places
+
+
+                // calculate subtotal and create the reportorder object
+                var subtotal = Math.Round(reportOrderDetails.Sum(item => item.TotalPrice), 2); // ensure subtotal has 2 decimal places
+                var deliverycharge = 50.00;  // assuming delivery charge is fixed
+                var total = Math.Round((double)subtotal + (double)deliverycharge, 2);  // ensure total has 2 decimal places
                 var ReportOrder = new
                 {
-                    OrderID = order.Id,
-                    CustomerName = user?.FirstName + user?.LastName,
-                    CustomerPhone = address?.Phone,
-                    EmployeeName = "Employee Name",
-                    EmployeePhone = "Employee Phone",
-                    CreationDate = order.CreationDate,
-                    CustomerAddress = address?.Address,
-                    Subtotal = subtotal.ToString("F2"),
-                    DalivaryCharge = deliveryCharge.ToString("F2"),
-                    Total = total.ToString("F2"),
-                    Paid = total.ToString("F2"),
-                    TodayDate = DateTime.Now.ToString("MM/dd/yy"),
-                    CurrentTime = DateTime.Now.ToString("hh:mm:ss tt"),
-                    InvoiceNumber = order.TransactionNumber,
+                    orderid = order.Id,
+                    customername = user?.FirstName + user?.LastName,
+                    customerphone = address?.Phone,
+                    employeename = "employee name",
+                    employeephone = "employee phone",
+                    creationdate = order.CreationDate,
+                    customeraddress = address?.Address,
+                    subtotal = subtotal.ToString("f2"),
+                    dalivarycharge = deliverycharge.ToString("f2"),
+                    total = total.ToString("f2"),
+                    paid = total.ToString("f2"),
+                    todaydate = DateTime.Now.ToString("mm/dd/yy"),
+                    currenttime = DateTime.Now.ToString("hh:mm:ss tt"),
+                    invoicenumber = order.TransactionNumber,
                 };
 
 

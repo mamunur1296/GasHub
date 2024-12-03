@@ -35,6 +35,6 @@ namespace GasHub.Models
         // Navigation properties
         public virtual User User { get; set; }
         public virtual Product Product { get; set; }
-
+        public ICollection<OrderDetail> OrderDetail { get; set; } = new List<OrderDetail>();
     }
 }

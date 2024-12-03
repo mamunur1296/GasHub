@@ -1,4 +1,27 @@
-﻿<!DOCTYPE html>
+﻿﻿@using System.Security.Claims
+@using Microsoft.IdentityModel.JsonWebTokens
+
+@{
+    var userName = string.Empty;
+   
+
+    if (User.Identity.IsAuthenticated)
+    {
+        var claimsIdentity = User.Identity as ClaimsIdentity;
+        if (claimsIdentity != null)
+        {
+            // Extract the username from claims
+            var userNameClaim = claimsIdentity.FindFirst(ClaimTypes.Name);
+            if (userNameClaim != null)
+            {
+                userName = userNameClaim.Value;
+            }
+
+            
+        }
+    }
+}
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
@@ -263,12 +286,7 @@
                                 </p>
                             </a>
                             <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a asp-action="index" asp-controller="Order" class="nav-link">
-                                        <i class="nav-icon fas fa-list"></i>
-                                        <p>Order List</p>
-                                    </a>
-                                </li>
+                                
                                 <li class="nav-item">
                                     <a asp-action="PlasedOrder" asp-controller="Order" class="nav-link">
                                         <i class="nav-icon fas fa-box-open"></i>
@@ -291,6 +309,12 @@
                                     <a asp-action="ConfirmDispatchOrder" asp-controller="Order" class="nav-link">
                                         <i class="nav-icon fas fa-shipping-fast"></i>
                                         <p>Confirmed Dispatch Orders</p>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a asp-action="index" asp-controller="Order" class="nav-link">
+                                        <i class="nav-icon fas fa-list"></i>
+                                        <p>Order List</p>
                                     </a>
                                 </li>
                             </ul>
@@ -424,6 +448,7 @@
                     </ul>
 
                 </nav>
+
                 <!-- /.sidebar-menu -->
             </div>
             <!-- /.sidebar -->
@@ -431,8 +456,22 @@
 
         <!-- Content Wrapper. Contains page content -->
         <div class="content-wrapper">
-            @* <section class="content">
-            </section> *@
+            @{
+                // Check if the logged-in email matches the default admin email
+                string defaultAdminEmail = "admin@123"; // Corrected email domain
+                if (userName == defaultAdminEmail)
+                {
+                    <div class="mt-4">
+                        <div class="alert alert-warning alert-dismissible fade show text-center fw-bold" role="alert">
+                            You are currently logged in with the default admin account. Please create a new admin account and delete the default admin account for better security!
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    </div>
+
+                }
+            }
                @RenderBody()
         </div>
         <!-- /.content-wrapper -->

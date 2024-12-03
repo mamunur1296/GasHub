@@ -120,6 +120,7 @@ async function GetProductSizeList() {
 
 
 async function GetProductList(companyId = null, sizeIds = []) {
+    debugger
     try {
         const products = await $.ajax({
             url: '/Product/GetAllProduct',
@@ -162,7 +163,7 @@ async function GetProductList(companyId = null, sizeIds = []) {
         $.each(filteredProducts, async function (index, product) {
             if (product) {
                 var discount = productDiscunMap[product.id];
-
+                debugger
 
                 // Create a new product card for each product
                 var colDiv = $('<div></div>').addClass('col-xl-3 col-lg-3 col-md-3');
@@ -175,11 +176,23 @@ async function GetProductList(companyId = null, sizeIds = []) {
 
                 var contentDiv = $('<div></div>').addClass('catagory-product-content');
                 var buttonDiv = $('<div></div>').addClass('catagory-button');
-                var button = $('<a></a>')
-                    //.attr('href', 'shop-cart.html')
-                    .addClass('theme-btn-2')
-                    .attr('order-product-id', product.id)
-                    .html('<i class="far fa-shopping-basket"></i> Add To Cart');
+                if (product.isStock === 0) {
+                    debugger
+                    var button = $('<a></a>')
+                        .addClass('theme-btn-2 text-danger disabled-link')
+                        .css({
+                            'pointer-events': 'none',
+                            'opacity': '0.5'
+                        })
+                        .html('<i class="far fa-shopping-basket"></i> Out Of Stock');
+                } else {
+                    var button = $('<a></a>')
+                        //.attr('href', 'shop-cart.html')
+                        .addClass('theme-btn-2')
+                        .attr('order-product-id', product.id)
+                        .html('<i class="far fa-shopping-basket"></i> Add To Cart');
+                }
+                
                 var priceDiv = $('<div></div>').addClass('info-price d-flex align-items-center justify-content-center');
 
                 // Check for discount, original price, and discounted price
@@ -287,11 +300,22 @@ async function GetProductList1() {
 
                 var contentDiv = $('<div></div>').addClass('catagory-product-content');
                 var buttonDiv = $('<div></div>').addClass('catagory-button');
-                var button = $('<a></a>')
-                    //.attr('href', 'shop-cart.html')
-                    .addClass('theme-btn-2 w-100')
-                    .attr('order-product-id', product.id)
-                    .html('<i class="far fa-shopping-basket"></i>Add To Cart');
+                if (product.isStock === 0) {
+                    debugger
+                    var button = $('<a></a>')
+                        .addClass('theme-btn-2 text-danger disabled-link')
+                        .css({
+                            'pointer-events': 'none',
+                            'opacity': '0.5'
+                        })
+                        .html('<i class="far fa-shopping-basket"></i> Out Of Stock');
+                } else {
+                    var button = $('<a></a>')
+                        //.attr('href', 'shop-cart.html')
+                        .addClass('theme-btn-2')
+                        .attr('order-product-id', product.id)
+                        .html('<i class="far fa-shopping-basket"></i> Add To Cart');
+                }
                 var priceDiv = $('<div></div>').addClass('info-price d-flex align-items-center justify-content-center');
 
                 // Check for discount, original price, and discounted price

@@ -13,9 +13,22 @@
         </div>
         <div class="catagory-product-content">
             <div class="catagory-button">
-                <a class="theme-btn-2" order-product-id="@Model.Id">
-                    <i class="far fa-shopping-basket"></i>Add To Cart
-                </a>
+
+                @if (Model.IsStock == 0)
+                {
+                    <a class="theme-btn-2 text-danger disabled-link" style="pointer-events: none; opacity: 0.5;">
+                        <i class="far fa-shopping-basket"></i> Out Of Stock
+                    </a>
+                }
+                else
+                {
+                    <a class="theme-btn-2" order-product-id="@Model.Id">
+                        <i class="far fa-shopping-basket"></i> Add To Cart
+                    </a>
+                }
+
+                
+                
             </div>
             <div class="info-price d-flex align-items-center justify-content-center">
                 @if (hasDiscount && hasValidate)
